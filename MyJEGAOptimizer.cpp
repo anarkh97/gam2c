@@ -1864,11 +1864,12 @@ Structors
 ===============================================================================
 */
 MyJEGAOptimizer::MyJEGAOptimizer(
-    ProblemDescDB& problem_db, Model& model
+    ProblemDescDB& problem_db, Model& model, const IoData& iod
     ) :
         Optimizer(problem_db, model, std::shared_ptr<TraitsBase>(new MyJEGATraits())),
         _theParamDB(0x0),
-        _theEvalCreator(0x0)
+        _theEvalCreator(0x0),
+        _iod(iod)
 {
     EDDY_FUNC_DEBUGSCOPE
 

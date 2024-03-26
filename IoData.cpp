@@ -27,6 +27,7 @@ DesignVariableData::DesignVariableData()
 {
   type = NONE;
   var_name = "x";
+  init_point = 0;
   lower_limit = -DBL_MAX;
   upper_limit = DBL_MAX;
 }
@@ -45,14 +46,15 @@ DesignVariableData::getAssigner()
                                    "IntegerDiscrete", 3, "StringDiscrete", 4, "None", 5);
   //Parse integrals
   //Parse doubles
+  new ClassDouble<DesignVariableData>(ca, "InitialValue", this, &DesignVariableData::init_point); 
   new ClassDouble<DesignVariableData>(ca, "LowerBound", this, &DesignVariableData::lower_limit); 
   new ClassDouble<DesignVariableData>(ca, "UpperBound", this, &DesignVariableData::upper_limit); 
   //Parse strings
   new ClassStr<DesignVariableData>(ca, "Name", this, &DesignVariableData::var_name);
   //Parse objects
-  new ClassSet<DesignVariableData, int> (ca, "IntDiscrete", this, &DesignVariableData::int_discrete);
-  new ClassSet<DesignVariableData, double> (ca, "RealDiscrete", this, &DesignVariableData::real_discrete);
-  new ClassSet<DesignVariableData, string> (ca, "StringDiscrete", this, &DesignVariableData::string_discrete);
+  new ClassSet<DesignVariableData, int> (ca, "IntegerValues", this, &DesignVariableData::int_discrete);
+  new ClassSet<DesignVariableData, double> (ca, "RealValues", this, &DesignVariableData::real_discrete);
+  new ClassSet<DesignVariableData, string> (ca, "StringValues", this, &DesignVariableData::string_discrete);
 
   return ca;
 
@@ -274,7 +276,6 @@ ParameterData::setup(const char *name, ClassAssigner *father)
 ResponseData::ResponseData()
 {
   objective_label = "objective";
-  feature_label = "error";
 }
 
 //------------------------------------------------------------------------------
@@ -282,14 +283,13 @@ ResponseData::ResponseData()
 void
 ResponseData::setup(const char *name, ClassAssigner *father)
 {
-  ClassAssigner *ca = new ClassAssigner(name, 3, father);
+  ClassAssigner *ca = new ClassAssigner(name, 2, father);
 
   //Parse tokens
   //Parse integrals
   //Parse doubles
   //Parse string
-  ClassStr<ResponseData>(ca, "ObjectiveLabel", this, &ResponseData::objective_label);
-  ClassStr<ResponseData>(ca, "FeatureLabel", this, &ResponseData::feature_label);
+  new ClassStr<ResponseData>(ca, "ObjectiveLabel", this, &ResponseData::objective_label);
   //Parse object
   constraints.setup("Constraint", ca);
 }
@@ -298,6 +298,7 @@ ResponseData::setup(const char *name, ClassAssigner *father)
 
 SmartLearningData::SmartLearningData()
 {
+  feature_label = "error";
   num_neighbors = 3;
   tolerance = 1e-3;
 }
@@ -307,10 +308,11 @@ SmartLearningData::SmartLearningData()
 void 
 SmartLearningData::setup(const char *name, ClassAssigner *father)
 {
-  ClassAssigner *ca = new ClassAssigner(name, 2, father);
+  ClassAssigner *ca = new ClassAssigner(name, 3, father);
 
   new ClassInt<SmartLearningData> (ca, "NearestNeightbours", this, &SmartLearningData::num_neighbors);
   new ClassDouble<SmartLearningData> (ca, "ToleranceForLabels", this, &SmartLearningData::tolerance);
+  new ClassStr<SmartLearningData>(ca, "FeatureLabel", this, &SmartLearningData::feature_label);
 }
 
 //------------------------------------------------------------------------------

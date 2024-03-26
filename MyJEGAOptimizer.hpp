@@ -102,7 +102,7 @@ Includes
 #include <../Utilities/include/JEGATypes.hpp>
 
 
-
+#include <IoData.hpp>
 
 
 
@@ -231,6 +231,8 @@ class MyJEGAOptimizer :
          * in this array.
          */
         Dakota::VariablesArray _initPts;
+
+        IoData _iod;
 
     /*
     ===========================================================================
@@ -564,7 +566,9 @@ class MyJEGAOptimizer :
          *              for problem information, etc.
          */
         MyJEGAOptimizer(
-            Dakota::ProblemDescDB& problem_db, Dakota::Model& model
+            Dakota::ProblemDescDB& problem_db, 
+            Dakota::Model& model,
+            const IoData& iod
             );
 
         /// Destructs a MyJEGAOptimizer

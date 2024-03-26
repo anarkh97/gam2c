@@ -45,10 +45,10 @@ public:
 
 struct DesignVariableData {
 
-  //AN: TODO implement REAL_DISCRETE_SET and INTEGER_DISCRETE_SET
   enum Type {REAL_CONTINUOUS=0, REAL_DISCRETE, INTEGER_CONTINUOUS, 
              INTEGER_DISCRETE, STRING_DISCRETE, NONE} type;
   const char *var_name; //!< design variable name required by JEGA.
+  double init_point; //!< initial value for this variable; if any.
   double upper_limit; //!< continuous variable upper limit; if any.
   double lower_limit; //!< continuous variable lower limit; if any.
 
@@ -106,7 +106,6 @@ struct ConstraintData {
 //should be ok. The default fitness evaluator (merit_function) is used.
 struct ResponseData {
   const char *objective_label;
-  const char *feature_label; //used by metadata
   
   //AN: We can also communicate with driver script and our optimizer by
   //passing IoData to the optimizer directly and specifying a filename
@@ -160,6 +159,7 @@ struct EnvironmentData {
 
 struct SmartLearningData {
   
+  const char *feature_label; //used by metadata
   int num_neighbors; //number of design neighbors to interpolate from.
 
   // has info for nearest neighbor interpolation
