@@ -19,8 +19,13 @@ int main(int argc, char* argv[])
 	Dakota::mpi_debug_hold();
 
 #ifdef DAKOTA_HAVE_MPI
-	if (parallel)
-		MPI_Init(&argc, &argv); // initialize MPI
+	//AN: Stop execution in case someone tries mpiexec gam2c.
+	if (parallel) {
+		//MPI_Init(&argc, &argv); // initialize MPI
+		Cerr << "***Error: GAM2C is not configured to run with"
+				 << " dakota's coarse grained parallelism." << std::endl;
+		Dakota::abort_handler(Dakota::OTHER_ERROR);
+	}
 #endif // DAKOTA_HAVE_MPI
 
 	// No dakota input file set --> no parsing.  
@@ -47,14 +52,14 @@ int main(int argc, char* argv[])
 	// execute dakota
 	env.execute();
 
+/*
   // Note: Dakota objects created in above function calls need to go
   // out of scope prior to MPI_Finalize so that MPI code in
   // destructors works properly in library mode.
-
 #ifdef DAKOTA_HAVE_MPI
-	if (parallel)
-		MPI_Finalize(); // finalize MPI
+	//if (parallel)
+		//MPI_Finalize(); // finalize MPI
 #endif // DAKOTA_HAVE_MPI
-
+*/
 	return 0;
 }
