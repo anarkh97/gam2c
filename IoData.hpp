@@ -64,20 +64,20 @@ struct ParameterData {
   const char *prefix; //!< prefix to file
   const char *filename; //!< file containing set of possible discrete values
 
-  ObjectMap<DesignVariableData> variablesMap;
+  ObjectMap<DesignVariableData> variables;
 
   ParameterData();
   ~ParameterData() {};
 
   void setup(const char *, ClassAssigner * = 0);
-}
+};
 
 //------------------------------------------------------------------------------
 
 struct ConstraintData {
 
-  enum Nature {LINEAR = 0, NON_LINEAR = 1} nature;
-  enum Type {INEQUALITY = 0, TWO_INEQUALITY = 1, EQUALITY = 2, NONE = 3} type;
+  enum Nature {LINEAR = 0, NON_LINEAR} nature;
+  enum Type {INEQUALITY = 0, EQUALITY, NONE} type;
 
   double upper_limit; //!< upper limit for one and two sided inequality constraint.
   double lower_limit; //!< lower limit for two sided inequality constraint.
@@ -105,13 +105,13 @@ struct ResponseData {
   //AN: for now  we use dakota's metadata to pass information from driver 
   //script to our ai model. This will be error values. 
   
-  ObjectMap<ConstraintData> constraintMap;
+  ObjectMap<ConstraintData> constraints;
 
   ResponseData();
   ~ResponseData() {};
 
   void setup(const char *, ClassAssigner * = 0);
-}
+};
 
 //------------------------------------------------------------------------------
 
@@ -144,13 +144,13 @@ struct EnvironmentData {
 
   void setup(const char *, ClassAssigner * = 0); 
 
-}
+};
 
 //------------------------------------------------------------------------------
 
 struct SmartLearningData {
   
-  int numNeighbors; //number of design neighbors to interpolate from.
+  int num_neighbors; //number of design neighbors to interpolate from.
 
   // has info for nearest neighbor interpolation
   //vector<double> *newDesignVariable; // new design variable for doing predictions
@@ -165,20 +165,20 @@ struct SmartLearningData {
 
 //------------------------------------------------------------------------------
 
-struct AlgorithmDataData {
+struct AlgorithmData {
 
   //AN: dakota infers the type of study based on response functions and handles
   //jega accordingly.
 
   enum Verbose {SILENT=0, NORMAL, DEBUG, QUIET, VERBOSE} verbose;
   enum Type {BASIC=0, SMART} type;
-  enum Selector {ROULETTE=0, UNIQUE_ROULETTE, ELITIST, NONE} selector;
-  enum Tracker {AVG_FITNESS=0, BEST_FITNESS, NONE} tracker;
-  enum Initializer {SIMPLE_RANDOM=0, UNIQUE_RANDOM, NONE} initializer;  
-  enum Crosser {MULTI_POINT_BINARY=0, MULTI_POINT_PARAM_BINARY, 
-                MULTI_POINT_REAL, SHUFFLE_RANDOM, NONE} crosser;
-  enum Mutator {RANDOM_BIT=0, CAUCHY_OFFSET, NORMAL_OFFSET, UNIFORM_OFFSET,
-                UNIFROM_REPLACE, NONE} mutator;
+  enum Selector {DEFAULT_SELECTOR=0, ROULETTE, UNIQUE_ROULETTE, ELITIST} selector;
+  enum Tracker {DEFAULT_TRACKER=0, AVG_FITNESS, BEST_FITNESS, NONE} tracker;
+  enum Initializer {DEFAULT_INITIALIZER=0, SIMPLE_RANDOM, UNIQUE_RANDOM} initializer;  
+  enum Crosser {DEFAULT_CROSSER=0, MULTI_POINT_BINARY, MULTI_POINT_PARAM_BINARY, 
+                MULTI_POINT_REAL, SHUFFLE_RANDOM} crosser;
+  enum Mutator {DEFAULT_MUTATOR=0, RANDOM_BIT=0, CAUCHY_OFFSET, NORMAL_OFFSET, UNIFORM_OFFSET,
+                UNIFROM_REPLACE} mutator;
   
   enum YesNo {NO=0, YES} print_each_pop;
 

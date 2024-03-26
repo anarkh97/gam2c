@@ -27,14 +27,8 @@ DesignVariableData::DesignVariableData()
 {
   type = NONE;
   var_name = "x";
-  prefix = "";
-  filename = "";
   lower_limit = -DBL_MAX;
   upper_limit = DBL_MAX;
-  objective_coeff = 0;
-  inequalit_coeff = 0;
-  two_inequalit_coeff = 0;
-  equality_coeff = 0;
 }
 
 //------------------------------------------------------------------------------
@@ -43,21 +37,20 @@ Assigner*
 DesignVariableData::getAssigner()
 {
 
-  ClassAssigner *ca = new ClassAssigner("normal", 10, nullAssigner);
+  ClassAssigner *ca = new ClassAssigner("normal", 4, nullAssigner);
+  //Parse tokens
   new ClassToken<DesignVariableData>(ca, "Type", this,
                                    reinterpret_cast<int DesignVariableData::*>(&DesignVariableData::type), 
-                                   6, "RealContinuous", 0, "RealDiscrete", 1, "IntegerContinuous", 2, 
-                                   "IntegerDiscrete", 3, "Boolean", 4, "None", 5);
-  new ClassStr<DesignVariableData>(ca, "Name", this, &DesignVariableData::var_name);
-  new ClassStr<DesignVariableData>(ca, "Prefix", this, &DesignVariableData::prefix);
-  new ClassStr<DesignVariableData>(ca, "Filename", this, &DesignVariableData::filename);
+                                   5, "RealContinuous", 0, "RealDiscrete", 1, "IntegerContinuous", 2, 
+                                   "IntegerDiscrete", 3, "None", 4);
+  //Parse integrals
+  //Parse doubles
   new ClassDouble<DesignVariableData>(ca, "LowerBound", this, &DesignVariableData::lower_limit); 
   new ClassDouble<DesignVariableData>(ca, "UpperBound", this, &DesignVariableData::upper_limit); 
-  new ClassDouble<DesignVariableData>(ca, "ObjectiveCoefficient", this, &DesignVariableData::objective_coeff); 
-  new ClassDouble<DesignVariableData>(ca, "InequalityCoefficient", this, &DesignVariableData::inequalit_coeff); 
-  new ClassDouble<DesignVariableData>(ca, "TwoSideInequalityCoefficient", this, &DesignVariableData::two_inequalit_coeff); 
-  new ClassDouble<DesignVariableData>(ca, "EqualityCoefficient", this, &DesignVariableData::equality_coeff); 
-  
+  //Parse strings
+  new ClassStr<DesignVariableData>(ca, "Name", this, &DesignVariableData::var_name);
+  //Parse objects
+
   return ca;
 
 }
@@ -70,8 +63,8 @@ ConstraintData::ConstraintData()
   type = NONE;
   con_name = "c";
   lower_limit = -DBL_MAX;
-  upper_limit = 0; // most commonly used constraint c \leq 0
-  equality_value = DBL_MAX;
+  upper_limit = 0; //AN: most commonly used constraint c \leq 0
+  equality_value = 0;
   constraint_thickness = 0; 
 }
 
@@ -82,17 +75,21 @@ ConstraintData::getAssigner()
 {
 
   ClassAssigner *ca = new ClassAssigner("normal", 7, nullAssigner);
+  //Parse tokens
   new ClassToken<ConstraintData>(ca, "Nature", this,
                                  reinterpret_cast<int ConstraintData::*>(&ConstraintData::nature), 
                                  2, "Linear", 0, "NonLinear", 1);
   new ClassToken<ConstraintData>(ca, "Type", this,
                                  reinterpret_cast<int ConstraintData::*>(&ConstraintData::type), 
-                                 4, "Inequality", 0, "TwoSideInequality", 1, "Equality", 2, "None", 3);
-  new ClassStr<ConstraintData>(ca, "Name", this, &ConstraintData::con_name);
+                                 4, "Inequality", 0, "Equality", 1, "None", 2);
+  //Parse integrals
+  //Parse doubles
   new ClassDouble<ConstraintData>(ca, "LowerBound", this, &ConstraintData::lower_limit);
   new ClassDouble<ConstraintData>(ca, "UpperBound", this, &ConstraintData::upper_limit);
   new ClassDouble<ConstraintData>(ca, "EqualBound", this, &ConstraintData::equality_value);
   new ClassDouble<ConstraintData>(ca, "EqualThickness", this, &ConstraintData::constraint_thickness);
+  //Parse strings
+  new ClassStr<ConstraintData>(ca, "Name", this, &ConstraintData::con_name);
 
   return ca;
 
@@ -112,6 +109,7 @@ EnvironmentData::EnvironmentData()
 void
 EnvironmentData::setup(const char* name, ClassAssigner *father)
 {
+  ClassAssigner *ca = new ClassAssigner(name, 3, father);
   new ClassStr<EnvironmentData>(ca, "DataFileName", this, 
                                 &EnvironmentData::tab_data_file);
   new ClassStr<EnvironmentData>(ca, "LogFileName", this, 
@@ -126,11 +124,11 @@ AlgorithmData::AlgorithmData()
 {
   verbose = NORMAL;
   type = BASIC;
-  selector = NONE;
-  tracker = NONE;
-  initializer = NONE;
-  crosser = NONE;
-  mutator = NONE;
+  selector = DEFAULT_SELECTOR;
+  tracker = DEFAULT_TRACKER;
+  initializer = DEFAULT_INITIALIZER;
+  crosser = DEFAULT_CROSSER;
+  mutator = DEFAULT_MUTATOR;
   print_each_pop = NO;
 
   mutation_rate = 0.08; //dakota default
@@ -157,36 +155,66 @@ AlgorithmData::AlgorithmData()
 void
 AlgorithmData::setup(const char *name, ClassAssigner *father)
 {
-  ClassAssigner *ca = new ClassAssigner(name, 12, father);
+  ClassAssigner *ca = new ClassAssigner(name, 21, father);
+  //Parse tokens
   new ClassToken<AlgorithmData>(ca, "Verbose", this,
-                                   reinterpret_cast<int AlgorithmData::*>(&AlgorithmData::print_each_pop), 
-                                   2, "No", 0, "Yes", 1);
+                                   reinterpret_cast<int AlgorithmData::*>(&AlgorithmData::verbose), 
+                                   5, "Hush", 0, "Normal", 1, "Debug", 2, "Low", 3, "High", 4);
+  new ClassToken<AlgorithmData>(ca, "Type", this,
+                                   reinterpret_cast<int AlgorithmData::*>(&AlgorithmData::type), 
+                                   2, "Basic", 0, "WithAI", 1);
+  new ClassToken<AlgorithmData>(ca, "SelectionType", this,
+                                   reinterpret_cast<int AlgorithmData::*>(&AlgorithmData::selector), 
+                                   4, "Default", 0, "Roulette", 1, "UniqueRoulette", 2, "Elitist", 3);
+  new ClassToken<AlgorithmData>(ca, "ConvergenceType", this,
+                                   reinterpret_cast<int AlgorithmData::*>(&AlgorithmData::tracker), 
+                                   3, "Default", 0, "Average", 1, "Best", 2);
+  new ClassToken<AlgorithmData>(ca, "InitializationType", this,
+                                   reinterpret_cast<int AlgorithmData::*>(&AlgorithmData::initializer), 
+                                   3, "Default", 0, "Random", 1, "UniqueRandom", 2);
+  new ClassToken<AlgorithmData>(ca, "CrossoverType", this,
+                                   reinterpret_cast<int AlgorithmData::*>(&AlgorithmData::crosser), 
+                                   5, "Default", 0, "MPBinary", 1, "MPParamBinary", 2, "MPReal", 3, "Shuffle", 4);
+  new ClassToken<AlgorithmData>(ca, "MutationType", this,
+                                   reinterpret_cast<int AlgorithmData::*>(&AlgorithmData::mutator), 
+                                   6, "Default", 0, "BitRandom", 1, "OffsetCauchy", 2, "OffsetNormal", 3, 
+                                   "OffsetUniform", 4, "ReplaceUniform", 5);
   new ClassToken<AlgorithmData>(ca, "PrintEachPopulation", this,
                                    reinterpret_cast<int AlgorithmData::*>(&AlgorithmData::print_each_pop), 
                                    2, "No", 0, "Yes", 1);
-  new ClassToken<AlgorithmData>(ca, "TrackFitness", this,
-                                   reinterpret_cast<int AlgorithmData::*>(&AlgorithmData::track), 
-                                   3, "Average", 0, "Best", 1, "None", 2);
-  new ClassInt<AlgorithmData>(ca, "MaxFunctionEvaluations", this, &AlgorithmData::max_function_evals);
+  //Parse integrals
+  new ClassInt<AlgorithmData>(ca, "NumberOfParents", this, &AlgorithmData::shuffle_parents);
+  new ClassInt<AlgorithmData>(ca, "NumberOfOffspring", this, &AlgorithmData::shuffle_offspring);
+  new ClassInt<AlgorithmData>(ca, "PopulationSize", this, &AlgorithmData::population_size);
+  new ClassInt<AlgorithmData>(ca, "Seed", this, &AlgorithmData::seed);
   new ClassInt<AlgorithmData>(ca, "MaxIterations", this, &AlgorithmData::max_iterations);
-  new ClassInt<AlgorithmData>(ca, "TrackGenerations", this, &AlgorithmData::num_generations);
-  new ClassDouble<AlgorithmData>(ca, "PercentageChange", this, &AlgorithmData::percent_change);
+  new ClassInt<AlgorithmData>(ca, "MaxObjectiveEvals", this, &AlgorithmData::max_func_evals);
+  new ClassInt<AlgorithmData>(ca, "NumberOfGensTracked", this, &AlgorithmData::tracked_generations);
+  new ClassInt<AlgorithmData>(ca, "NumberOfFinalSolutions", this, &AlgorithmData::final_solutions);
+  //Parse doubles
   new ClassDouble<AlgorithmData>(ca, "ConstraintPenalty", this, &AlgorithmData::constraint_penalty);
-  new ClassDouble<AlgorithmData>(ca, "ConvergenceTolerance", this, &AlgorithmData::convergence_tolerance);
+  new ClassDouble<AlgorithmData>(ca, "MutationRate", this, &AlgorithmData::mutation_rate);
+  //AN: right now not allowing mutation scale updates.
+  new ClassDouble<AlgorithmData>(ca, "CrossoverRate", this, &AlgorithmData::crossover_rate);
+  new ClassDouble<AlgorithmData>(ca, "PercentageChange", this, &AlgorithmData::convergence_tol);
+  //Parse strings
 
+  //Parse objects
+  ml_model.setup("SmartDesigner", ca);
 }
 
 //------------------------------------------------------------------------------
 
 InterfaceData::InterfaceData()
 {
-  type = SIMPLE;
   mode = SYNCHRONOUS;
+  local_scheduling = STATIC;
   evaluation_concurrency = 1;
   directory_tag = "";
-  in_file_pattern = "results.out.#";
-  out_file_pattern = "params.in.#";
-  exe_name = nullptr;
+  //patterns handled by dakota; we just provide names right now
+  params_file_pattern = "params.in";
+  result_file_pattern = "results.out";
+  exe_name = "";
 }
 
 //------------------------------------------------------------------------------
@@ -194,55 +222,87 @@ InterfaceData::InterfaceData()
 void
 InterfaceData::setup(const char *name, ClassAssigner *father)
 {
-  ClassAssigner *ca = new ClassAssigner(name, 6, father);
-  new ClassInt<InterfaceData>(ca, "EvaluationConcurrency", this, 
-                               &InterfaceData::evaluation_concurrency);
-  new ClassToken<InterfaceData>(ca, "Type", this,
-                                 reinterpret_cast<int InterfaceData::*>(&InterfaceData::type), 
-                                 3, "Simple", 0, "External", 1, "Null", 2);
-  new ClassToken<InterfaceData>(ca, "Mode", this,
+  ClassAssigner *ca = new ClassAssigner(name, 7, father);
+  //Parse tokens
+  new ClassToken<InterfaceData>(ca, "EvaluationType", this,
                                  reinterpret_cast<int InterfaceData::*>(&InterfaceData::mode), 
                                  2, "Synchronous", 0, "Asynchronous", 1);
+  new ClassToken<InterfaceData>(ca, "SchedulingType", this,
+                                 reinterpret_cast<int InterfaceData::*>(&InterfaceData::local_scheduling), 
+                                 2, "WaitForAll", 0, "DontWaitForAll", 1);
+  //Parse integrals
+  new ClassInt<InterfaceData>(ca, "EvaluationConcurrency", this, 
+                               &InterfaceData::evaluation_concurrency);
+  //Parse double
+
+  //Parse string
   new ClassStr<InterfaceData>(ca, "WorkDirectory", this, &InterfaceData::directory_tag);
-  new ClassStr<InterfaceData>(ca, "Driver", this, &InterfaceData::exe_name);
-  new ClassStr<InterfaceData>(ca, "ParamsPattern", this, &InterfaceData::in_file_pattern);
-  new ClassStr<InterfaceData>(ca, "ResultPattern", this, &InterfaceData::out_file_pattern);
+  new ClassStr<InterfaceData>(ca, "AnalysisScript", this, &InterfaceData::exe_name);
+  new ClassStr<InterfaceData>(ca, "ParamFileName", this, &InterfaceData::params_file_pattern);
+  new ClassStr<InterfaceData>(ca, "ResultFileName", this, &InterfaceData::result_file_pattern);
+  //Parse objects
+}
+
+//------------------------------------------------------------------------------
+
+ParameterData::ParameterData()
+{
+  prefix = "";
+  filename = "";
+}
+
+//------------------------------------------------------------------------------
+
+void
+ParameterData::setup(const char *name, ClassAssigner *father)
+{
+  ClassAssigner *ca = new ClassAssigner(name, 1, father);
+  //AN: we can use prefix and filename to specify a file to read initial variables from
+  variables.setup("DesignVariable", ca);
+}
+
+//------------------------------------------------------------------------------
+
+ResponseData::ResponseData()
+{
+  objective_label = "objective";
+  feature_label = "error";
+}
+
+//------------------------------------------------------------------------------
+
+void
+ResponseData::setup(const char *name, ClassAssigner *father)
+{
+  ClassAssigner *ca = new ClassAssigner(name, 3, father);
+
+  //Parse tokens
+  //Parse integrals
+  //Parse doubles
+  //Parse string
+  ClassStr<ResponseData>(ca, "ObjectiveLabel", this, &ResponseData::objective_label);
+  ClassStr<ResponseData>(ca, "FeatureLabel", this, &ResponseData::feature_label);
+  //Parse object
+  constraints.setup("Constraint", ca);
 }
 
 //------------------------------------------------------------------------------
 
 SmartLearningData::SmartLearningData()
 {
-  metafile = "";
-  prefix = "";
-  suffix = "";
-
-  // default mode is to calculate error labels
-  computeMode = LEARNING;
-  newDesignVariable = nullptr;
-  numDesignVariables = 0;
+  num_neighbors = 3;
   tolerance = 1e-3;
 }
 
 //------------------------------------------------------------------------------
-void SmartLearningData::setup(const char *name, ClassAssigner *father)
+
+void 
+SmartLearningData::setup(const char *name, ClassAssigner *father)
 {
-  ClassAssigner *ca = new ClassAssigner(name, 9, father);
+  ClassAssigner *ca = new ClassAssigner(name, 2, father);
 
-  new ClassToken<SmartLearningData> (ca, "ComputationMode", this,
-    reinterpret_cast<int SmartLearningData::*>(&SmartLearningData::computeMode), 2,
-    "Learning", 0, "Prediction", 1);
-
-  new ClassStr<SmartLearningData> (ca, "MetaFile", this, &SmartLearningData::metafile);
-  new ClassStr<SmartLearningData> (ca, "Prefix", this, &SmartLearningData::prefix);
-  new ClassStr<SmartLearningData> (ca, "Suffix", this, &SmartLearningData::suffix);
-  new ClassInt<SmartLearningData> (ca, "NumDesignVariables", this, &SmartLearningData::numDesignVariables);
-  // new ClassInt<SmartLearningData> (ca, "NearestNeightbours", this, &SmartLearningData::numFriends);
-  new ClassList<SmartLearningData> (ca, "DesignVector", this, &SmartLearningData::newDesignVariable);
+  new ClassInt<SmartLearningData> (ca, "NearestNeightbours", this, &SmartLearningData::num_neighbors);
   new ClassDouble<SmartLearningData> (ca, "ToleranceForLabels", this, &SmartLearningData::tolerance);
-
-  transient_input.setup("TransientInputData", ca);
-  output.setup("LabelOutput", ca);
 }
 
 //------------------------------------------------------------------------------
