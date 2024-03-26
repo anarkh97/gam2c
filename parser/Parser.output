@@ -4,6 +4,10 @@ Terminals unused in grammar
    '^'
 
 
+State 34 conflicts: 1 shift/reduce
+State 35 conflicts: 1 shift/reduce
+
+
 Grammar
 
     0 $accept: File $end
@@ -18,70 +22,82 @@ Grammar
     6 Assignment: Assignable '=' Symbol ';'
     7           | Assignable '=' IntExpr ';'
     8           | Assignable '=' DblExpr ';'
-    9           | Assignable '=' ListExpr ';'
-   10           | Assignable '=' String ';'
+    9           | Assignable '=' IntSetExpr ';'
+   10           | Assignable '=' DblSetExpr ';'
+   11           | Assignable '=' StrSetExpr ';'
+   12           | Assignable '=' String ';'
 
-   11 $@1: %empty
+   13 $@1: %empty
 
-   12 GroupInput: UNDER Assignable '{' $@1 ValidInput '}'
+   14 GroupInput: UNDER Assignable '{' $@1 ValidInput '}'
 
-   13 Assignable: Symbol
-   14           | Assignable '.' Symbol
-   15           | Assignable '[' IntExpr ']'
+   15 Assignable: Symbol
+   16           | Assignable '.' Symbol
+   17           | Assignable '[' IntExpr ']'
 
-   16 IntExpr: IntConstant
-   17        | '(' IntExpr ')'
-   18        | IntExpr '+' IntExpr
-   19        | IntExpr '-' IntExpr
-   20        | IntExpr '*' IntExpr
-   21        | IntExpr '/' IntExpr
+   18 IntExpr: IntConstant
+   19        | '(' IntExpr ')'
+   20        | IntExpr '+' IntExpr
+   21        | IntExpr '-' IntExpr
+   22        | IntExpr '*' IntExpr
+   23        | IntExpr '/' IntExpr
 
-   22 DblExpr: DblConstant
-   23        | '(' DblExpr ')'
-   24        | DblExpr '+' DblExpr
-   25        | DblExpr '+' IntExpr
-   26        | IntExpr '+' DblExpr
-   27        | DblExpr '-' DblExpr
-   28        | DblExpr '-' IntExpr
-   29        | IntExpr '-' DblExpr
-   30        | DblExpr '*' DblExpr
-   31        | IntExpr '*' DblExpr
-   32        | DblExpr '*' IntExpr
-   33        | DblExpr '/' DblExpr
-   34        | IntExpr '/' DblExpr
-   35        | DblExpr '/' IntExpr
+   24 DblExpr: DblConstant
+   25        | '(' DblExpr ')'
+   26        | DblExpr '+' DblExpr
+   27        | DblExpr '+' IntExpr
+   28        | IntExpr '+' DblExpr
+   29        | DblExpr '-' DblExpr
+   30        | DblExpr '-' IntExpr
+   31        | IntExpr '-' DblExpr
+   32        | DblExpr '*' DblExpr
+   33        | IntExpr '*' DblExpr
+   34        | DblExpr '*' IntExpr
+   35        | DblExpr '/' DblExpr
+   36        | IntExpr '/' DblExpr
+   37        | DblExpr '/' IntExpr
 
-   36 ListExpr: '[' ListLoop ']'
+   38 IntSetExpr: '(' IntSetLoop ')'
 
-   37 ListLoop: DblExpr
-   38         | ListLoop ',' DblExpr
+   39 IntSetLoop: IntExpr
+   40           | IntSetLoop ',' IntExpr
+
+   41 DblSetExpr: '(' DblSetLoop ')'
+
+   42 DblSetLoop: DblExpr
+   43           | DblSetLoop ',' DblExpr
+
+   44 StrSetExpr: '(' StrSetLoop ')'
+
+   45 StrSetLoop: String
+   46           | StrSetLoop ',' String
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'(' (40) 17 23
-')' (41) 17 23
-'*' (42) 20 30 31 32
-'+' (43) 18 24 25 26
-',' (44) 38
-'-' (45) 19 27 28 29
-'.' (46) 14
-'/' (47) 21 33 34 35
-';' (59) 6 7 8 9 10
-'=' (61) 6 7 8 9 10
-'[' (91) 15 36
-']' (93) 15 36
+'(' (40) 19 25 38 41 44
+')' (41) 19 25 38 41 44
+'*' (42) 22 32 33 34
+'+' (43) 20 26 27 28
+',' (44) 40 43 46
+'-' (45) 21 29 30 31
+'.' (46) 16
+'/' (47) 23 35 36 37
+';' (59) 6 7 8 9 10 11 12
+'=' (61) 6 7 8 9 10 11 12
+'[' (91) 17
+']' (93) 17
 '^' (94)
-'{' (123) 12
-'}' (125) 12
+'{' (123) 14
+'}' (125) 14
 error (256)
-UNDER (258) 12
+UNDER (258) 14
 EoF (259) 1
-IntConstant (260) 16
-DblConstant (261) 22
-Symbol (262) 6 13 14
-String (263) 10
+IntConstant (260) 18
+DblConstant (261) 24
+Symbol (262) 6 15 16
+String (263) 12 45 46
 END (264) 2
 BOGUS (265)
 
@@ -93,25 +109,33 @@ $accept (26)
 File (27)
     on left: 1 2, on right: 0
 ValidInput (28)
-    on left: 3 4 5, on right: 1 2 4 5 12
+    on left: 3 4 5, on right: 1 2 4 5 14
 Assignment (29)
-    on left: 6 7 8 9 10, on right: 4
+    on left: 6 7 8 9 10 11 12, on right: 4
 GroupInput (30)
-    on left: 12, on right: 5
+    on left: 14, on right: 5
 $@1 (31)
-    on left: 11, on right: 12
+    on left: 13, on right: 14
 Assignable (32)
-    on left: 13 14 15, on right: 6 7 8 9 10 12 14 15
+    on left: 15 16 17, on right: 6 7 8 9 10 11 12 14 16 17
 IntExpr (33)
-    on left: 16 17 18 19 20 21, on right: 7 15 17 18 19 20 21 25 26
-    28 29 31 32 34 35
+    on left: 18 19 20 21 22 23, on right: 7 17 19 20 21 22 23 27 28
+    30 31 33 34 36 37 39 40
 DblExpr (34)
-    on left: 22 23 24 25 26 27 28 29 30 31 32 33 34 35, on right: 8
-    23 24 25 26 27 28 29 30 31 32 33 34 35 37 38
-ListExpr (35)
-    on left: 36, on right: 9
-ListLoop (36)
-    on left: 37 38, on right: 36 38
+    on left: 24 25 26 27 28 29 30 31 32 33 34 35 36 37, on right: 8
+    25 26 27 28 29 30 31 32 33 34 35 36 37 42 43
+IntSetExpr (35)
+    on left: 38, on right: 9
+IntSetLoop (36)
+    on left: 39 40, on right: 38 40
+DblSetExpr (37)
+    on left: 41, on right: 10
+DblSetLoop (38)
+    on left: 42 43, on right: 41 43
+StrSetExpr (39)
+    on left: 44, on right: 11
+StrSetLoop (40)
+    on left: 45 46, on right: 44 46
 
 
 State 0
@@ -157,7 +181,7 @@ State 3
 
 State 4
 
-   12 GroupInput: UNDER . Assignable '{' $@1 ValidInput '}'
+   14 GroupInput: UNDER . Assignable '{' $@1 ValidInput '}'
 
     Symbol  shift, and go to state 6
 
@@ -173,9 +197,9 @@ State 5
 
 State 6
 
-   13 Assignable: Symbol .
+   15 Assignable: Symbol .
 
-    $default  reduce using rule 13 (Assignable)
+    $default  reduce using rule 15 (Assignable)
 
 
 State 7
@@ -204,10 +228,12 @@ State 10
     6 Assignment: Assignable . '=' Symbol ';'
     7           | Assignable . '=' IntExpr ';'
     8           | Assignable . '=' DblExpr ';'
-    9           | Assignable . '=' ListExpr ';'
-   10           | Assignable . '=' String ';'
-   14 Assignable: Assignable . '.' Symbol
-   15           | Assignable . '[' IntExpr ']'
+    9           | Assignable . '=' IntSetExpr ';'
+   10           | Assignable . '=' DblSetExpr ';'
+   11           | Assignable . '=' StrSetExpr ';'
+   12           | Assignable . '=' String ';'
+   16 Assignable: Assignable . '.' Symbol
+   17           | Assignable . '[' IntExpr ']'
 
     '='  shift, and go to state 12
     '.'  shift, and go to state 13
@@ -216,9 +242,9 @@ State 10
 
 State 11
 
-   12 GroupInput: UNDER Assignable . '{' $@1 ValidInput '}'
-   14 Assignable: Assignable . '.' Symbol
-   15           | Assignable . '[' IntExpr ']'
+   14 GroupInput: UNDER Assignable . '{' $@1 ValidInput '}'
+   16 Assignable: Assignable . '.' Symbol
+   17           | Assignable . '[' IntExpr ']'
 
     '{'  shift, and go to state 15
     '.'  shift, and go to state 13
@@ -230,856 +256,999 @@ State 12
     6 Assignment: Assignable '=' . Symbol ';'
     7           | Assignable '=' . IntExpr ';'
     8           | Assignable '=' . DblExpr ';'
-    9           | Assignable '=' . ListExpr ';'
-   10           | Assignable '=' . String ';'
+    9           | Assignable '=' . IntSetExpr ';'
+   10           | Assignable '=' . DblSetExpr ';'
+   11           | Assignable '=' . StrSetExpr ';'
+   12           | Assignable '=' . String ';'
 
     IntConstant  shift, and go to state 16
     DblConstant  shift, and go to state 17
     Symbol       shift, and go to state 18
     String       shift, and go to state 19
-    '['          shift, and go to state 20
-    '('          shift, and go to state 21
+    '('          shift, and go to state 20
 
-    IntExpr   go to state 22
-    DblExpr   go to state 23
-    ListExpr  go to state 24
+    IntExpr     go to state 21
+    DblExpr     go to state 22
+    IntSetExpr  go to state 23
+    DblSetExpr  go to state 24
+    StrSetExpr  go to state 25
 
 
 State 13
 
-   14 Assignable: Assignable '.' . Symbol
+   16 Assignable: Assignable '.' . Symbol
 
-    Symbol  shift, and go to state 25
+    Symbol  shift, and go to state 26
 
 
 State 14
 
-   15 Assignable: Assignable '[' . IntExpr ']'
+   17 Assignable: Assignable '[' . IntExpr ']'
 
     IntConstant  shift, and go to state 16
-    '('          shift, and go to state 26
+    '('          shift, and go to state 27
 
-    IntExpr  go to state 27
+    IntExpr  go to state 28
 
 
 State 15
 
-   12 GroupInput: UNDER Assignable '{' . $@1 ValidInput '}'
+   14 GroupInput: UNDER Assignable '{' . $@1 ValidInput '}'
 
-    $default  reduce using rule 11 ($@1)
+    $default  reduce using rule 13 ($@1)
 
-    $@1  go to state 28
+    $@1  go to state 29
 
 
 State 16
 
-   16 IntExpr: IntConstant .
+   18 IntExpr: IntConstant .
 
-    $default  reduce using rule 16 (IntExpr)
+    $default  reduce using rule 18 (IntExpr)
 
 
 State 17
 
-   22 DblExpr: DblConstant .
+   24 DblExpr: DblConstant .
 
-    $default  reduce using rule 22 (DblExpr)
+    $default  reduce using rule 24 (DblExpr)
 
 
 State 18
 
     6 Assignment: Assignable '=' Symbol . ';'
 
-    ';'  shift, and go to state 29
+    ';'  shift, and go to state 30
 
 
 State 19
 
-   10 Assignment: Assignable '=' String . ';'
+   12 Assignment: Assignable '=' String . ';'
 
-    ';'  shift, and go to state 30
+    ';'  shift, and go to state 31
 
 
 State 20
 
-   36 ListExpr: '[' . ListLoop ']'
+   19 IntExpr: '(' . IntExpr ')'
+   25 DblExpr: '(' . DblExpr ')'
+   38 IntSetExpr: '(' . IntSetLoop ')'
+   41 DblSetExpr: '(' . DblSetLoop ')'
+   44 StrSetExpr: '(' . StrSetLoop ')'
 
     IntConstant  shift, and go to state 16
     DblConstant  shift, and go to state 17
-    '('          shift, and go to state 21
+    String       shift, and go to state 32
+    '('          shift, and go to state 33
 
-    IntExpr   go to state 31
-    DblExpr   go to state 32
-    ListLoop  go to state 33
+    IntExpr     go to state 34
+    DblExpr     go to state 35
+    IntSetLoop  go to state 36
+    DblSetLoop  go to state 37
+    StrSetLoop  go to state 38
 
 
 State 21
 
-   17 IntExpr: '(' . IntExpr ')'
-   23 DblExpr: '(' . DblExpr ')'
+    7 Assignment: Assignable '=' IntExpr . ';'
+   20 IntExpr: IntExpr . '+' IntExpr
+   21        | IntExpr . '-' IntExpr
+   22        | IntExpr . '*' IntExpr
+   23        | IntExpr . '/' IntExpr
+   28 DblExpr: IntExpr . '+' DblExpr
+   31        | IntExpr . '-' DblExpr
+   33        | IntExpr . '*' DblExpr
+   36        | IntExpr . '/' DblExpr
 
-    IntConstant  shift, and go to state 16
-    DblConstant  shift, and go to state 17
-    '('          shift, and go to state 21
-
-    IntExpr  go to state 34
-    DblExpr  go to state 35
+    '+'  shift, and go to state 39
+    '-'  shift, and go to state 40
+    '*'  shift, and go to state 41
+    '/'  shift, and go to state 42
+    ';'  shift, and go to state 43
 
 
 State 22
 
-    7 Assignment: Assignable '=' IntExpr . ';'
-   18 IntExpr: IntExpr . '+' IntExpr
-   19        | IntExpr . '-' IntExpr
-   20        | IntExpr . '*' IntExpr
-   21        | IntExpr . '/' IntExpr
-   26 DblExpr: IntExpr . '+' DblExpr
-   29        | IntExpr . '-' DblExpr
-   31        | IntExpr . '*' DblExpr
-   34        | IntExpr . '/' DblExpr
+    8 Assignment: Assignable '=' DblExpr . ';'
+   26 DblExpr: DblExpr . '+' DblExpr
+   27        | DblExpr . '+' IntExpr
+   29        | DblExpr . '-' DblExpr
+   30        | DblExpr . '-' IntExpr
+   32        | DblExpr . '*' DblExpr
+   34        | DblExpr . '*' IntExpr
+   35        | DblExpr . '/' DblExpr
+   37        | DblExpr . '/' IntExpr
 
-    '+'  shift, and go to state 36
-    '-'  shift, and go to state 37
-    '*'  shift, and go to state 38
-    '/'  shift, and go to state 39
-    ';'  shift, and go to state 40
+    '+'  shift, and go to state 44
+    '-'  shift, and go to state 45
+    '*'  shift, and go to state 46
+    '/'  shift, and go to state 47
+    ';'  shift, and go to state 48
 
 
 State 23
 
-    8 Assignment: Assignable '=' DblExpr . ';'
-   24 DblExpr: DblExpr . '+' DblExpr
-   25        | DblExpr . '+' IntExpr
-   27        | DblExpr . '-' DblExpr
-   28        | DblExpr . '-' IntExpr
-   30        | DblExpr . '*' DblExpr
-   32        | DblExpr . '*' IntExpr
-   33        | DblExpr . '/' DblExpr
-   35        | DblExpr . '/' IntExpr
+    9 Assignment: Assignable '=' IntSetExpr . ';'
 
-    '+'  shift, and go to state 41
-    '-'  shift, and go to state 42
-    '*'  shift, and go to state 43
-    '/'  shift, and go to state 44
-    ';'  shift, and go to state 45
+    ';'  shift, and go to state 49
 
 
 State 24
 
-    9 Assignment: Assignable '=' ListExpr . ';'
+   10 Assignment: Assignable '=' DblSetExpr . ';'
 
-    ';'  shift, and go to state 46
+    ';'  shift, and go to state 50
 
 
 State 25
 
-   14 Assignable: Assignable '.' Symbol .
+   11 Assignment: Assignable '=' StrSetExpr . ';'
 
-    $default  reduce using rule 14 (Assignable)
+    ';'  shift, and go to state 51
 
 
 State 26
 
-   17 IntExpr: '(' . IntExpr ')'
+   16 Assignable: Assignable '.' Symbol .
 
-    IntConstant  shift, and go to state 16
-    '('          shift, and go to state 26
-
-    IntExpr  go to state 47
+    $default  reduce using rule 16 (Assignable)
 
 
 State 27
 
-   15 Assignable: Assignable '[' IntExpr . ']'
-   18 IntExpr: IntExpr . '+' IntExpr
-   19        | IntExpr . '-' IntExpr
-   20        | IntExpr . '*' IntExpr
-   21        | IntExpr . '/' IntExpr
+   19 IntExpr: '(' . IntExpr ')'
 
-    '+'  shift, and go to state 48
-    '-'  shift, and go to state 49
-    '*'  shift, and go to state 50
-    '/'  shift, and go to state 51
-    ']'  shift, and go to state 52
+    IntConstant  shift, and go to state 16
+    '('          shift, and go to state 27
+
+    IntExpr  go to state 52
 
 
 State 28
 
-   12 GroupInput: UNDER Assignable '{' $@1 . ValidInput '}'
+   17 Assignable: Assignable '[' IntExpr . ']'
+   20 IntExpr: IntExpr . '+' IntExpr
+   21        | IntExpr . '-' IntExpr
+   22        | IntExpr . '*' IntExpr
+   23        | IntExpr . '/' IntExpr
 
-    $default  reduce using rule 3 (ValidInput)
-
-    ValidInput  go to state 53
+    '+'  shift, and go to state 53
+    '-'  shift, and go to state 54
+    '*'  shift, and go to state 55
+    '/'  shift, and go to state 56
+    ']'  shift, and go to state 57
 
 
 State 29
+
+   14 GroupInput: UNDER Assignable '{' $@1 . ValidInput '}'
+
+    $default  reduce using rule 3 (ValidInput)
+
+    ValidInput  go to state 58
+
+
+State 30
 
     6 Assignment: Assignable '=' Symbol ';' .
 
     $default  reduce using rule 6 (Assignment)
 
 
-State 30
-
-   10 Assignment: Assignable '=' String ';' .
-
-    $default  reduce using rule 10 (Assignment)
-
-
 State 31
 
-   18 IntExpr: IntExpr . '+' IntExpr
-   19        | IntExpr . '-' IntExpr
-   20        | IntExpr . '*' IntExpr
-   21        | IntExpr . '/' IntExpr
-   26 DblExpr: IntExpr . '+' DblExpr
-   29        | IntExpr . '-' DblExpr
-   31        | IntExpr . '*' DblExpr
-   34        | IntExpr . '/' DblExpr
+   12 Assignment: Assignable '=' String ';' .
 
-    '+'  shift, and go to state 36
-    '-'  shift, and go to state 37
-    '*'  shift, and go to state 38
-    '/'  shift, and go to state 39
+    $default  reduce using rule 12 (Assignment)
 
 
 State 32
 
-   24 DblExpr: DblExpr . '+' DblExpr
-   25        | DblExpr . '+' IntExpr
-   27        | DblExpr . '-' DblExpr
-   28        | DblExpr . '-' IntExpr
-   30        | DblExpr . '*' DblExpr
-   32        | DblExpr . '*' IntExpr
-   33        | DblExpr . '/' DblExpr
-   35        | DblExpr . '/' IntExpr
-   37 ListLoop: DblExpr .
+   45 StrSetLoop: String .
 
-    '+'  shift, and go to state 41
-    '-'  shift, and go to state 42
-    '*'  shift, and go to state 43
-    '/'  shift, and go to state 44
-
-    $default  reduce using rule 37 (ListLoop)
+    $default  reduce using rule 45 (StrSetLoop)
 
 
 State 33
 
-   36 ListExpr: '[' ListLoop . ']'
-   38 ListLoop: ListLoop . ',' DblExpr
+   19 IntExpr: '(' . IntExpr ')'
+   25 DblExpr: '(' . DblExpr ')'
 
-    ']'  shift, and go to state 54
-    ','  shift, and go to state 55
+    IntConstant  shift, and go to state 16
+    DblConstant  shift, and go to state 17
+    '('          shift, and go to state 33
+
+    IntExpr  go to state 59
+    DblExpr  go to state 60
 
 
 State 34
 
-   17 IntExpr: '(' IntExpr . ')'
-   18        | IntExpr . '+' IntExpr
-   19        | IntExpr . '-' IntExpr
-   20        | IntExpr . '*' IntExpr
-   21        | IntExpr . '/' IntExpr
-   26 DblExpr: IntExpr . '+' DblExpr
-   29        | IntExpr . '-' DblExpr
-   31        | IntExpr . '*' DblExpr
-   34        | IntExpr . '/' DblExpr
+   19 IntExpr: '(' IntExpr . ')'
+   20        | IntExpr . '+' IntExpr
+   21        | IntExpr . '-' IntExpr
+   22        | IntExpr . '*' IntExpr
+   23        | IntExpr . '/' IntExpr
+   28 DblExpr: IntExpr . '+' DblExpr
+   31        | IntExpr . '-' DblExpr
+   33        | IntExpr . '*' DblExpr
+   36        | IntExpr . '/' DblExpr
+   39 IntSetLoop: IntExpr .
 
-    '+'  shift, and go to state 36
-    '-'  shift, and go to state 37
-    '*'  shift, and go to state 38
-    '/'  shift, and go to state 39
-    ')'  shift, and go to state 56
+    '+'  shift, and go to state 39
+    '-'  shift, and go to state 40
+    '*'  shift, and go to state 41
+    '/'  shift, and go to state 42
+    ')'  shift, and go to state 61
+
+    ')'       [reduce using rule 39 (IntSetLoop)]
+    $default  reduce using rule 39 (IntSetLoop)
 
 
 State 35
 
-   23 DblExpr: '(' DblExpr . ')'
-   24        | DblExpr . '+' DblExpr
-   25        | DblExpr . '+' IntExpr
-   27        | DblExpr . '-' DblExpr
-   28        | DblExpr . '-' IntExpr
-   30        | DblExpr . '*' DblExpr
-   32        | DblExpr . '*' IntExpr
-   33        | DblExpr . '/' DblExpr
-   35        | DblExpr . '/' IntExpr
+   25 DblExpr: '(' DblExpr . ')'
+   26        | DblExpr . '+' DblExpr
+   27        | DblExpr . '+' IntExpr
+   29        | DblExpr . '-' DblExpr
+   30        | DblExpr . '-' IntExpr
+   32        | DblExpr . '*' DblExpr
+   34        | DblExpr . '*' IntExpr
+   35        | DblExpr . '/' DblExpr
+   37        | DblExpr . '/' IntExpr
+   42 DblSetLoop: DblExpr .
 
-    '+'  shift, and go to state 41
-    '-'  shift, and go to state 42
-    '*'  shift, and go to state 43
-    '/'  shift, and go to state 44
-    ')'  shift, and go to state 57
+    '+'  shift, and go to state 44
+    '-'  shift, and go to state 45
+    '*'  shift, and go to state 46
+    '/'  shift, and go to state 47
+    ')'  shift, and go to state 62
+
+    ')'       [reduce using rule 42 (DblSetLoop)]
+    $default  reduce using rule 42 (DblSetLoop)
 
 
 State 36
 
-   18 IntExpr: IntExpr '+' . IntExpr
-   26 DblExpr: IntExpr '+' . DblExpr
+   38 IntSetExpr: '(' IntSetLoop . ')'
+   40 IntSetLoop: IntSetLoop . ',' IntExpr
 
-    IntConstant  shift, and go to state 16
-    DblConstant  shift, and go to state 17
-    '('          shift, and go to state 21
-
-    IntExpr  go to state 58
-    DblExpr  go to state 59
+    ')'  shift, and go to state 63
+    ','  shift, and go to state 64
 
 
 State 37
 
-   19 IntExpr: IntExpr '-' . IntExpr
-   29 DblExpr: IntExpr '-' . DblExpr
+   41 DblSetExpr: '(' DblSetLoop . ')'
+   43 DblSetLoop: DblSetLoop . ',' DblExpr
 
-    IntConstant  shift, and go to state 16
-    DblConstant  shift, and go to state 17
-    '('          shift, and go to state 21
-
-    IntExpr  go to state 60
-    DblExpr  go to state 61
+    ')'  shift, and go to state 65
+    ','  shift, and go to state 66
 
 
 State 38
 
-   20 IntExpr: IntExpr '*' . IntExpr
-   31 DblExpr: IntExpr '*' . DblExpr
+   44 StrSetExpr: '(' StrSetLoop . ')'
+   46 StrSetLoop: StrSetLoop . ',' String
 
-    IntConstant  shift, and go to state 16
-    DblConstant  shift, and go to state 17
-    '('          shift, and go to state 21
-
-    IntExpr  go to state 62
-    DblExpr  go to state 63
+    ')'  shift, and go to state 67
+    ','  shift, and go to state 68
 
 
 State 39
 
-   21 IntExpr: IntExpr '/' . IntExpr
-   34 DblExpr: IntExpr '/' . DblExpr
+   20 IntExpr: IntExpr '+' . IntExpr
+   28 DblExpr: IntExpr '+' . DblExpr
 
     IntConstant  shift, and go to state 16
     DblConstant  shift, and go to state 17
-    '('          shift, and go to state 21
+    '('          shift, and go to state 33
 
-    IntExpr  go to state 64
-    DblExpr  go to state 65
+    IntExpr  go to state 69
+    DblExpr  go to state 70
 
 
 State 40
+
+   21 IntExpr: IntExpr '-' . IntExpr
+   31 DblExpr: IntExpr '-' . DblExpr
+
+    IntConstant  shift, and go to state 16
+    DblConstant  shift, and go to state 17
+    '('          shift, and go to state 33
+
+    IntExpr  go to state 71
+    DblExpr  go to state 72
+
+
+State 41
+
+   22 IntExpr: IntExpr '*' . IntExpr
+   33 DblExpr: IntExpr '*' . DblExpr
+
+    IntConstant  shift, and go to state 16
+    DblConstant  shift, and go to state 17
+    '('          shift, and go to state 33
+
+    IntExpr  go to state 73
+    DblExpr  go to state 74
+
+
+State 42
+
+   23 IntExpr: IntExpr '/' . IntExpr
+   36 DblExpr: IntExpr '/' . DblExpr
+
+    IntConstant  shift, and go to state 16
+    DblConstant  shift, and go to state 17
+    '('          shift, and go to state 33
+
+    IntExpr  go to state 75
+    DblExpr  go to state 76
+
+
+State 43
 
     7 Assignment: Assignable '=' IntExpr ';' .
 
     $default  reduce using rule 7 (Assignment)
 
 
-State 41
-
-   24 DblExpr: DblExpr '+' . DblExpr
-   25        | DblExpr '+' . IntExpr
-
-    IntConstant  shift, and go to state 16
-    DblConstant  shift, and go to state 17
-    '('          shift, and go to state 21
-
-    IntExpr  go to state 66
-    DblExpr  go to state 67
-
-
-State 42
-
-   27 DblExpr: DblExpr '-' . DblExpr
-   28        | DblExpr '-' . IntExpr
-
-    IntConstant  shift, and go to state 16
-    DblConstant  shift, and go to state 17
-    '('          shift, and go to state 21
-
-    IntExpr  go to state 68
-    DblExpr  go to state 69
-
-
-State 43
-
-   30 DblExpr: DblExpr '*' . DblExpr
-   32        | DblExpr '*' . IntExpr
-
-    IntConstant  shift, and go to state 16
-    DblConstant  shift, and go to state 17
-    '('          shift, and go to state 21
-
-    IntExpr  go to state 70
-    DblExpr  go to state 71
-
-
 State 44
 
-   33 DblExpr: DblExpr '/' . DblExpr
-   35        | DblExpr '/' . IntExpr
+   26 DblExpr: DblExpr '+' . DblExpr
+   27        | DblExpr '+' . IntExpr
 
     IntConstant  shift, and go to state 16
     DblConstant  shift, and go to state 17
-    '('          shift, and go to state 21
+    '('          shift, and go to state 33
 
-    IntExpr  go to state 72
-    DblExpr  go to state 73
+    IntExpr  go to state 77
+    DblExpr  go to state 78
 
 
 State 45
+
+   29 DblExpr: DblExpr '-' . DblExpr
+   30        | DblExpr '-' . IntExpr
+
+    IntConstant  shift, and go to state 16
+    DblConstant  shift, and go to state 17
+    '('          shift, and go to state 33
+
+    IntExpr  go to state 79
+    DblExpr  go to state 80
+
+
+State 46
+
+   32 DblExpr: DblExpr '*' . DblExpr
+   34        | DblExpr '*' . IntExpr
+
+    IntConstant  shift, and go to state 16
+    DblConstant  shift, and go to state 17
+    '('          shift, and go to state 33
+
+    IntExpr  go to state 81
+    DblExpr  go to state 82
+
+
+State 47
+
+   35 DblExpr: DblExpr '/' . DblExpr
+   37        | DblExpr '/' . IntExpr
+
+    IntConstant  shift, and go to state 16
+    DblConstant  shift, and go to state 17
+    '('          shift, and go to state 33
+
+    IntExpr  go to state 83
+    DblExpr  go to state 84
+
+
+State 48
 
     8 Assignment: Assignable '=' DblExpr ';' .
 
     $default  reduce using rule 8 (Assignment)
 
 
-State 46
+State 49
 
-    9 Assignment: Assignable '=' ListExpr ';' .
+    9 Assignment: Assignable '=' IntSetExpr ';' .
 
     $default  reduce using rule 9 (Assignment)
 
 
-State 47
-
-   17 IntExpr: '(' IntExpr . ')'
-   18        | IntExpr . '+' IntExpr
-   19        | IntExpr . '-' IntExpr
-   20        | IntExpr . '*' IntExpr
-   21        | IntExpr . '/' IntExpr
-
-    '+'  shift, and go to state 48
-    '-'  shift, and go to state 49
-    '*'  shift, and go to state 50
-    '/'  shift, and go to state 51
-    ')'  shift, and go to state 56
-
-
-State 48
-
-   18 IntExpr: IntExpr '+' . IntExpr
-
-    IntConstant  shift, and go to state 16
-    '('          shift, and go to state 26
-
-    IntExpr  go to state 74
-
-
-State 49
-
-   19 IntExpr: IntExpr '-' . IntExpr
-
-    IntConstant  shift, and go to state 16
-    '('          shift, and go to state 26
-
-    IntExpr  go to state 75
-
-
 State 50
 
-   20 IntExpr: IntExpr '*' . IntExpr
+   10 Assignment: Assignable '=' DblSetExpr ';' .
 
-    IntConstant  shift, and go to state 16
-    '('          shift, and go to state 26
-
-    IntExpr  go to state 76
+    $default  reduce using rule 10 (Assignment)
 
 
 State 51
 
-   21 IntExpr: IntExpr '/' . IntExpr
+   11 Assignment: Assignable '=' StrSetExpr ';' .
 
-    IntConstant  shift, and go to state 16
-    '('          shift, and go to state 26
-
-    IntExpr  go to state 77
+    $default  reduce using rule 11 (Assignment)
 
 
 State 52
 
-   15 Assignable: Assignable '[' IntExpr ']' .
+   19 IntExpr: '(' IntExpr . ')'
+   20        | IntExpr . '+' IntExpr
+   21        | IntExpr . '-' IntExpr
+   22        | IntExpr . '*' IntExpr
+   23        | IntExpr . '/' IntExpr
 
-    $default  reduce using rule 15 (Assignable)
+    '+'  shift, and go to state 53
+    '-'  shift, and go to state 54
+    '*'  shift, and go to state 55
+    '/'  shift, and go to state 56
+    ')'  shift, and go to state 61
 
 
 State 53
 
+   20 IntExpr: IntExpr '+' . IntExpr
+
+    IntConstant  shift, and go to state 16
+    '('          shift, and go to state 27
+
+    IntExpr  go to state 85
+
+
+State 54
+
+   21 IntExpr: IntExpr '-' . IntExpr
+
+    IntConstant  shift, and go to state 16
+    '('          shift, and go to state 27
+
+    IntExpr  go to state 86
+
+
+State 55
+
+   22 IntExpr: IntExpr '*' . IntExpr
+
+    IntConstant  shift, and go to state 16
+    '('          shift, and go to state 27
+
+    IntExpr  go to state 87
+
+
+State 56
+
+   23 IntExpr: IntExpr '/' . IntExpr
+
+    IntConstant  shift, and go to state 16
+    '('          shift, and go to state 27
+
+    IntExpr  go to state 88
+
+
+State 57
+
+   17 Assignable: Assignable '[' IntExpr ']' .
+
+    $default  reduce using rule 17 (Assignable)
+
+
+State 58
+
     4 ValidInput: ValidInput . Assignment
     5           | ValidInput . GroupInput
-   12 GroupInput: UNDER Assignable '{' $@1 ValidInput . '}'
+   14 GroupInput: UNDER Assignable '{' $@1 ValidInput . '}'
 
     UNDER   shift, and go to state 4
     Symbol  shift, and go to state 6
-    '}'     shift, and go to state 78
+    '}'     shift, and go to state 89
 
     Assignment  go to state 8
     GroupInput  go to state 9
     Assignable  go to state 10
 
 
-State 54
-
-   36 ListExpr: '[' ListLoop ']' .
-
-    $default  reduce using rule 36 (ListExpr)
-
-
-State 55
-
-   38 ListLoop: ListLoop ',' . DblExpr
-
-    IntConstant  shift, and go to state 16
-    DblConstant  shift, and go to state 17
-    '('          shift, and go to state 21
-
-    IntExpr  go to state 31
-    DblExpr  go to state 79
-
-
-State 56
-
-   17 IntExpr: '(' IntExpr ')' .
-
-    $default  reduce using rule 17 (IntExpr)
-
-
-State 57
-
-   23 DblExpr: '(' DblExpr ')' .
-
-    $default  reduce using rule 23 (DblExpr)
-
-
-State 58
-
-   18 IntExpr: IntExpr . '+' IntExpr
-   18        | IntExpr '+' IntExpr .
-   19        | IntExpr . '-' IntExpr
-   20        | IntExpr . '*' IntExpr
-   21        | IntExpr . '/' IntExpr
-   26 DblExpr: IntExpr . '+' DblExpr
-   29        | IntExpr . '-' DblExpr
-   31        | IntExpr . '*' DblExpr
-   34        | IntExpr . '/' DblExpr
-
-    '*'  shift, and go to state 38
-    '/'  shift, and go to state 39
-
-    $default  reduce using rule 18 (IntExpr)
-
-
 State 59
 
-   24 DblExpr: DblExpr . '+' DblExpr
-   25        | DblExpr . '+' IntExpr
-   26        | IntExpr '+' DblExpr .
-   27        | DblExpr . '-' DblExpr
-   28        | DblExpr . '-' IntExpr
-   30        | DblExpr . '*' DblExpr
-   32        | DblExpr . '*' IntExpr
-   33        | DblExpr . '/' DblExpr
-   35        | DblExpr . '/' IntExpr
+   19 IntExpr: '(' IntExpr . ')'
+   20        | IntExpr . '+' IntExpr
+   21        | IntExpr . '-' IntExpr
+   22        | IntExpr . '*' IntExpr
+   23        | IntExpr . '/' IntExpr
+   28 DblExpr: IntExpr . '+' DblExpr
+   31        | IntExpr . '-' DblExpr
+   33        | IntExpr . '*' DblExpr
+   36        | IntExpr . '/' DblExpr
 
-    '*'  shift, and go to state 43
-    '/'  shift, and go to state 44
-
-    $default  reduce using rule 26 (DblExpr)
+    '+'  shift, and go to state 39
+    '-'  shift, and go to state 40
+    '*'  shift, and go to state 41
+    '/'  shift, and go to state 42
+    ')'  shift, and go to state 61
 
 
 State 60
 
-   18 IntExpr: IntExpr . '+' IntExpr
-   19        | IntExpr . '-' IntExpr
-   19        | IntExpr '-' IntExpr .
-   20        | IntExpr . '*' IntExpr
-   21        | IntExpr . '/' IntExpr
-   26 DblExpr: IntExpr . '+' DblExpr
-   29        | IntExpr . '-' DblExpr
-   31        | IntExpr . '*' DblExpr
-   34        | IntExpr . '/' DblExpr
+   25 DblExpr: '(' DblExpr . ')'
+   26        | DblExpr . '+' DblExpr
+   27        | DblExpr . '+' IntExpr
+   29        | DblExpr . '-' DblExpr
+   30        | DblExpr . '-' IntExpr
+   32        | DblExpr . '*' DblExpr
+   34        | DblExpr . '*' IntExpr
+   35        | DblExpr . '/' DblExpr
+   37        | DblExpr . '/' IntExpr
 
-    '*'  shift, and go to state 38
-    '/'  shift, and go to state 39
-
-    $default  reduce using rule 19 (IntExpr)
+    '+'  shift, and go to state 44
+    '-'  shift, and go to state 45
+    '*'  shift, and go to state 46
+    '/'  shift, and go to state 47
+    ')'  shift, and go to state 62
 
 
 State 61
 
-   24 DblExpr: DblExpr . '+' DblExpr
-   25        | DblExpr . '+' IntExpr
-   27        | DblExpr . '-' DblExpr
-   28        | DblExpr . '-' IntExpr
-   29        | IntExpr '-' DblExpr .
-   30        | DblExpr . '*' DblExpr
-   32        | DblExpr . '*' IntExpr
-   33        | DblExpr . '/' DblExpr
-   35        | DblExpr . '/' IntExpr
-
-    '*'  shift, and go to state 43
-    '/'  shift, and go to state 44
-
-    $default  reduce using rule 29 (DblExpr)
-
-
-State 62
-
-   18 IntExpr: IntExpr . '+' IntExpr
-   19        | IntExpr . '-' IntExpr
-   20        | IntExpr . '*' IntExpr
-   20        | IntExpr '*' IntExpr .
-   21        | IntExpr . '/' IntExpr
-   26 DblExpr: IntExpr . '+' DblExpr
-   29        | IntExpr . '-' DblExpr
-   31        | IntExpr . '*' DblExpr
-   34        | IntExpr . '/' DblExpr
-
-    $default  reduce using rule 20 (IntExpr)
-
-
-State 63
-
-   24 DblExpr: DblExpr . '+' DblExpr
-   25        | DblExpr . '+' IntExpr
-   27        | DblExpr . '-' DblExpr
-   28        | DblExpr . '-' IntExpr
-   30        | DblExpr . '*' DblExpr
-   31        | IntExpr '*' DblExpr .
-   32        | DblExpr . '*' IntExpr
-   33        | DblExpr . '/' DblExpr
-   35        | DblExpr . '/' IntExpr
-
-    $default  reduce using rule 31 (DblExpr)
-
-
-State 64
-
-   18 IntExpr: IntExpr . '+' IntExpr
-   19        | IntExpr . '-' IntExpr
-   20        | IntExpr . '*' IntExpr
-   21        | IntExpr . '/' IntExpr
-   21        | IntExpr '/' IntExpr .
-   26 DblExpr: IntExpr . '+' DblExpr
-   29        | IntExpr . '-' DblExpr
-   31        | IntExpr . '*' DblExpr
-   34        | IntExpr . '/' DblExpr
-
-    $default  reduce using rule 21 (IntExpr)
-
-
-State 65
-
-   24 DblExpr: DblExpr . '+' DblExpr
-   25        | DblExpr . '+' IntExpr
-   27        | DblExpr . '-' DblExpr
-   28        | DblExpr . '-' IntExpr
-   30        | DblExpr . '*' DblExpr
-   32        | DblExpr . '*' IntExpr
-   33        | DblExpr . '/' DblExpr
-   34        | IntExpr '/' DblExpr .
-   35        | DblExpr . '/' IntExpr
-
-    $default  reduce using rule 34 (DblExpr)
-
-
-State 66
-
-   18 IntExpr: IntExpr . '+' IntExpr
-   19        | IntExpr . '-' IntExpr
-   20        | IntExpr . '*' IntExpr
-   21        | IntExpr . '/' IntExpr
-   25 DblExpr: DblExpr '+' IntExpr .
-   26        | IntExpr . '+' DblExpr
-   29        | IntExpr . '-' DblExpr
-   31        | IntExpr . '*' DblExpr
-   34        | IntExpr . '/' DblExpr
-
-    '*'  shift, and go to state 38
-    '/'  shift, and go to state 39
-
-    $default  reduce using rule 25 (DblExpr)
-
-
-State 67
-
-   24 DblExpr: DblExpr . '+' DblExpr
-   24        | DblExpr '+' DblExpr .
-   25        | DblExpr . '+' IntExpr
-   27        | DblExpr . '-' DblExpr
-   28        | DblExpr . '-' IntExpr
-   30        | DblExpr . '*' DblExpr
-   32        | DblExpr . '*' IntExpr
-   33        | DblExpr . '/' DblExpr
-   35        | DblExpr . '/' IntExpr
-
-    '*'  shift, and go to state 43
-    '/'  shift, and go to state 44
-
-    $default  reduce using rule 24 (DblExpr)
-
-
-State 68
-
-   18 IntExpr: IntExpr . '+' IntExpr
-   19        | IntExpr . '-' IntExpr
-   20        | IntExpr . '*' IntExpr
-   21        | IntExpr . '/' IntExpr
-   26 DblExpr: IntExpr . '+' DblExpr
-   28        | DblExpr '-' IntExpr .
-   29        | IntExpr . '-' DblExpr
-   31        | IntExpr . '*' DblExpr
-   34        | IntExpr . '/' DblExpr
-
-    '*'  shift, and go to state 38
-    '/'  shift, and go to state 39
-
-    $default  reduce using rule 28 (DblExpr)
-
-
-State 69
-
-   24 DblExpr: DblExpr . '+' DblExpr
-   25        | DblExpr . '+' IntExpr
-   27        | DblExpr . '-' DblExpr
-   27        | DblExpr '-' DblExpr .
-   28        | DblExpr . '-' IntExpr
-   30        | DblExpr . '*' DblExpr
-   32        | DblExpr . '*' IntExpr
-   33        | DblExpr . '/' DblExpr
-   35        | DblExpr . '/' IntExpr
-
-    '*'  shift, and go to state 43
-    '/'  shift, and go to state 44
-
-    $default  reduce using rule 27 (DblExpr)
-
-
-State 70
-
-   18 IntExpr: IntExpr . '+' IntExpr
-   19        | IntExpr . '-' IntExpr
-   20        | IntExpr . '*' IntExpr
-   21        | IntExpr . '/' IntExpr
-   26 DblExpr: IntExpr . '+' DblExpr
-   29        | IntExpr . '-' DblExpr
-   31        | IntExpr . '*' DblExpr
-   32        | DblExpr '*' IntExpr .
-   34        | IntExpr . '/' DblExpr
-
-    $default  reduce using rule 32 (DblExpr)
-
-
-State 71
-
-   24 DblExpr: DblExpr . '+' DblExpr
-   25        | DblExpr . '+' IntExpr
-   27        | DblExpr . '-' DblExpr
-   28        | DblExpr . '-' IntExpr
-   30        | DblExpr . '*' DblExpr
-   30        | DblExpr '*' DblExpr .
-   32        | DblExpr . '*' IntExpr
-   33        | DblExpr . '/' DblExpr
-   35        | DblExpr . '/' IntExpr
-
-    $default  reduce using rule 30 (DblExpr)
-
-
-State 72
-
-   18 IntExpr: IntExpr . '+' IntExpr
-   19        | IntExpr . '-' IntExpr
-   20        | IntExpr . '*' IntExpr
-   21        | IntExpr . '/' IntExpr
-   26 DblExpr: IntExpr . '+' DblExpr
-   29        | IntExpr . '-' DblExpr
-   31        | IntExpr . '*' DblExpr
-   34        | IntExpr . '/' DblExpr
-   35        | DblExpr '/' IntExpr .
-
-    $default  reduce using rule 35 (DblExpr)
-
-
-State 73
-
-   24 DblExpr: DblExpr . '+' DblExpr
-   25        | DblExpr . '+' IntExpr
-   27        | DblExpr . '-' DblExpr
-   28        | DblExpr . '-' IntExpr
-   30        | DblExpr . '*' DblExpr
-   32        | DblExpr . '*' IntExpr
-   33        | DblExpr . '/' DblExpr
-   33        | DblExpr '/' DblExpr .
-   35        | DblExpr . '/' IntExpr
-
-    $default  reduce using rule 33 (DblExpr)
-
-
-State 74
-
-   18 IntExpr: IntExpr . '+' IntExpr
-   18        | IntExpr '+' IntExpr .
-   19        | IntExpr . '-' IntExpr
-   20        | IntExpr . '*' IntExpr
-   21        | IntExpr . '/' IntExpr
-
-    '*'  shift, and go to state 50
-    '/'  shift, and go to state 51
-
-    $default  reduce using rule 18 (IntExpr)
-
-
-State 75
-
-   18 IntExpr: IntExpr . '+' IntExpr
-   19        | IntExpr . '-' IntExpr
-   19        | IntExpr '-' IntExpr .
-   20        | IntExpr . '*' IntExpr
-   21        | IntExpr . '/' IntExpr
-
-    '*'  shift, and go to state 50
-    '/'  shift, and go to state 51
+   19 IntExpr: '(' IntExpr ')' .
 
     $default  reduce using rule 19 (IntExpr)
 
 
-State 76
+State 62
 
-   18 IntExpr: IntExpr . '+' IntExpr
-   19        | IntExpr . '-' IntExpr
-   20        | IntExpr . '*' IntExpr
-   20        | IntExpr '*' IntExpr .
-   21        | IntExpr . '/' IntExpr
+   25 DblExpr: '(' DblExpr ')' .
+
+    $default  reduce using rule 25 (DblExpr)
+
+
+State 63
+
+   38 IntSetExpr: '(' IntSetLoop ')' .
+
+    $default  reduce using rule 38 (IntSetExpr)
+
+
+State 64
+
+   40 IntSetLoop: IntSetLoop ',' . IntExpr
+
+    IntConstant  shift, and go to state 16
+    '('          shift, and go to state 27
+
+    IntExpr  go to state 90
+
+
+State 65
+
+   41 DblSetExpr: '(' DblSetLoop ')' .
+
+    $default  reduce using rule 41 (DblSetExpr)
+
+
+State 66
+
+   43 DblSetLoop: DblSetLoop ',' . DblExpr
+
+    IntConstant  shift, and go to state 16
+    DblConstant  shift, and go to state 17
+    '('          shift, and go to state 33
+
+    IntExpr  go to state 91
+    DblExpr  go to state 92
+
+
+State 67
+
+   44 StrSetExpr: '(' StrSetLoop ')' .
+
+    $default  reduce using rule 44 (StrSetExpr)
+
+
+State 68
+
+   46 StrSetLoop: StrSetLoop ',' . String
+
+    String  shift, and go to state 93
+
+
+State 69
+
+   20 IntExpr: IntExpr . '+' IntExpr
+   20        | IntExpr '+' IntExpr .
+   21        | IntExpr . '-' IntExpr
+   22        | IntExpr . '*' IntExpr
+   23        | IntExpr . '/' IntExpr
+   28 DblExpr: IntExpr . '+' DblExpr
+   31        | IntExpr . '-' DblExpr
+   33        | IntExpr . '*' DblExpr
+   36        | IntExpr . '/' DblExpr
+
+    '*'  shift, and go to state 41
+    '/'  shift, and go to state 42
 
     $default  reduce using rule 20 (IntExpr)
 
 
-State 77
+State 70
 
-   18 IntExpr: IntExpr . '+' IntExpr
-   19        | IntExpr . '-' IntExpr
-   20        | IntExpr . '*' IntExpr
-   21        | IntExpr . '/' IntExpr
-   21        | IntExpr '/' IntExpr .
+   26 DblExpr: DblExpr . '+' DblExpr
+   27        | DblExpr . '+' IntExpr
+   28        | IntExpr '+' DblExpr .
+   29        | DblExpr . '-' DblExpr
+   30        | DblExpr . '-' IntExpr
+   32        | DblExpr . '*' DblExpr
+   34        | DblExpr . '*' IntExpr
+   35        | DblExpr . '/' DblExpr
+   37        | DblExpr . '/' IntExpr
+
+    '*'  shift, and go to state 46
+    '/'  shift, and go to state 47
+
+    $default  reduce using rule 28 (DblExpr)
+
+
+State 71
+
+   20 IntExpr: IntExpr . '+' IntExpr
+   21        | IntExpr . '-' IntExpr
+   21        | IntExpr '-' IntExpr .
+   22        | IntExpr . '*' IntExpr
+   23        | IntExpr . '/' IntExpr
+   28 DblExpr: IntExpr . '+' DblExpr
+   31        | IntExpr . '-' DblExpr
+   33        | IntExpr . '*' DblExpr
+   36        | IntExpr . '/' DblExpr
+
+    '*'  shift, and go to state 41
+    '/'  shift, and go to state 42
 
     $default  reduce using rule 21 (IntExpr)
 
 
+State 72
+
+   26 DblExpr: DblExpr . '+' DblExpr
+   27        | DblExpr . '+' IntExpr
+   29        | DblExpr . '-' DblExpr
+   30        | DblExpr . '-' IntExpr
+   31        | IntExpr '-' DblExpr .
+   32        | DblExpr . '*' DblExpr
+   34        | DblExpr . '*' IntExpr
+   35        | DblExpr . '/' DblExpr
+   37        | DblExpr . '/' IntExpr
+
+    '*'  shift, and go to state 46
+    '/'  shift, and go to state 47
+
+    $default  reduce using rule 31 (DblExpr)
+
+
+State 73
+
+   20 IntExpr: IntExpr . '+' IntExpr
+   21        | IntExpr . '-' IntExpr
+   22        | IntExpr . '*' IntExpr
+   22        | IntExpr '*' IntExpr .
+   23        | IntExpr . '/' IntExpr
+   28 DblExpr: IntExpr . '+' DblExpr
+   31        | IntExpr . '-' DblExpr
+   33        | IntExpr . '*' DblExpr
+   36        | IntExpr . '/' DblExpr
+
+    $default  reduce using rule 22 (IntExpr)
+
+
+State 74
+
+   26 DblExpr: DblExpr . '+' DblExpr
+   27        | DblExpr . '+' IntExpr
+   29        | DblExpr . '-' DblExpr
+   30        | DblExpr . '-' IntExpr
+   32        | DblExpr . '*' DblExpr
+   33        | IntExpr '*' DblExpr .
+   34        | DblExpr . '*' IntExpr
+   35        | DblExpr . '/' DblExpr
+   37        | DblExpr . '/' IntExpr
+
+    $default  reduce using rule 33 (DblExpr)
+
+
+State 75
+
+   20 IntExpr: IntExpr . '+' IntExpr
+   21        | IntExpr . '-' IntExpr
+   22        | IntExpr . '*' IntExpr
+   23        | IntExpr . '/' IntExpr
+   23        | IntExpr '/' IntExpr .
+   28 DblExpr: IntExpr . '+' DblExpr
+   31        | IntExpr . '-' DblExpr
+   33        | IntExpr . '*' DblExpr
+   36        | IntExpr . '/' DblExpr
+
+    $default  reduce using rule 23 (IntExpr)
+
+
+State 76
+
+   26 DblExpr: DblExpr . '+' DblExpr
+   27        | DblExpr . '+' IntExpr
+   29        | DblExpr . '-' DblExpr
+   30        | DblExpr . '-' IntExpr
+   32        | DblExpr . '*' DblExpr
+   34        | DblExpr . '*' IntExpr
+   35        | DblExpr . '/' DblExpr
+   36        | IntExpr '/' DblExpr .
+   37        | DblExpr . '/' IntExpr
+
+    $default  reduce using rule 36 (DblExpr)
+
+
+State 77
+
+   20 IntExpr: IntExpr . '+' IntExpr
+   21        | IntExpr . '-' IntExpr
+   22        | IntExpr . '*' IntExpr
+   23        | IntExpr . '/' IntExpr
+   27 DblExpr: DblExpr '+' IntExpr .
+   28        | IntExpr . '+' DblExpr
+   31        | IntExpr . '-' DblExpr
+   33        | IntExpr . '*' DblExpr
+   36        | IntExpr . '/' DblExpr
+
+    '*'  shift, and go to state 41
+    '/'  shift, and go to state 42
+
+    $default  reduce using rule 27 (DblExpr)
+
+
 State 78
 
-   12 GroupInput: UNDER Assignable '{' $@1 ValidInput '}' .
+   26 DblExpr: DblExpr . '+' DblExpr
+   26        | DblExpr '+' DblExpr .
+   27        | DblExpr . '+' IntExpr
+   29        | DblExpr . '-' DblExpr
+   30        | DblExpr . '-' IntExpr
+   32        | DblExpr . '*' DblExpr
+   34        | DblExpr . '*' IntExpr
+   35        | DblExpr . '/' DblExpr
+   37        | DblExpr . '/' IntExpr
 
-    $default  reduce using rule 12 (GroupInput)
+    '*'  shift, and go to state 46
+    '/'  shift, and go to state 47
+
+    $default  reduce using rule 26 (DblExpr)
 
 
 State 79
 
-   24 DblExpr: DblExpr . '+' DblExpr
-   25        | DblExpr . '+' IntExpr
-   27        | DblExpr . '-' DblExpr
-   28        | DblExpr . '-' IntExpr
-   30        | DblExpr . '*' DblExpr
-   32        | DblExpr . '*' IntExpr
-   33        | DblExpr . '/' DblExpr
-   35        | DblExpr . '/' IntExpr
-   38 ListLoop: ListLoop ',' DblExpr .
+   20 IntExpr: IntExpr . '+' IntExpr
+   21        | IntExpr . '-' IntExpr
+   22        | IntExpr . '*' IntExpr
+   23        | IntExpr . '/' IntExpr
+   28 DblExpr: IntExpr . '+' DblExpr
+   30        | DblExpr '-' IntExpr .
+   31        | IntExpr . '-' DblExpr
+   33        | IntExpr . '*' DblExpr
+   36        | IntExpr . '/' DblExpr
 
-    '+'  shift, and go to state 41
-    '-'  shift, and go to state 42
-    '*'  shift, and go to state 43
-    '/'  shift, and go to state 44
+    '*'  shift, and go to state 41
+    '/'  shift, and go to state 42
 
-    $default  reduce using rule 38 (ListLoop)
+    $default  reduce using rule 30 (DblExpr)
+
+
+State 80
+
+   26 DblExpr: DblExpr . '+' DblExpr
+   27        | DblExpr . '+' IntExpr
+   29        | DblExpr . '-' DblExpr
+   29        | DblExpr '-' DblExpr .
+   30        | DblExpr . '-' IntExpr
+   32        | DblExpr . '*' DblExpr
+   34        | DblExpr . '*' IntExpr
+   35        | DblExpr . '/' DblExpr
+   37        | DblExpr . '/' IntExpr
+
+    '*'  shift, and go to state 46
+    '/'  shift, and go to state 47
+
+    $default  reduce using rule 29 (DblExpr)
+
+
+State 81
+
+   20 IntExpr: IntExpr . '+' IntExpr
+   21        | IntExpr . '-' IntExpr
+   22        | IntExpr . '*' IntExpr
+   23        | IntExpr . '/' IntExpr
+   28 DblExpr: IntExpr . '+' DblExpr
+   31        | IntExpr . '-' DblExpr
+   33        | IntExpr . '*' DblExpr
+   34        | DblExpr '*' IntExpr .
+   36        | IntExpr . '/' DblExpr
+
+    $default  reduce using rule 34 (DblExpr)
+
+
+State 82
+
+   26 DblExpr: DblExpr . '+' DblExpr
+   27        | DblExpr . '+' IntExpr
+   29        | DblExpr . '-' DblExpr
+   30        | DblExpr . '-' IntExpr
+   32        | DblExpr . '*' DblExpr
+   32        | DblExpr '*' DblExpr .
+   34        | DblExpr . '*' IntExpr
+   35        | DblExpr . '/' DblExpr
+   37        | DblExpr . '/' IntExpr
+
+    $default  reduce using rule 32 (DblExpr)
+
+
+State 83
+
+   20 IntExpr: IntExpr . '+' IntExpr
+   21        | IntExpr . '-' IntExpr
+   22        | IntExpr . '*' IntExpr
+   23        | IntExpr . '/' IntExpr
+   28 DblExpr: IntExpr . '+' DblExpr
+   31        | IntExpr . '-' DblExpr
+   33        | IntExpr . '*' DblExpr
+   36        | IntExpr . '/' DblExpr
+   37        | DblExpr '/' IntExpr .
+
+    $default  reduce using rule 37 (DblExpr)
+
+
+State 84
+
+   26 DblExpr: DblExpr . '+' DblExpr
+   27        | DblExpr . '+' IntExpr
+   29        | DblExpr . '-' DblExpr
+   30        | DblExpr . '-' IntExpr
+   32        | DblExpr . '*' DblExpr
+   34        | DblExpr . '*' IntExpr
+   35        | DblExpr . '/' DblExpr
+   35        | DblExpr '/' DblExpr .
+   37        | DblExpr . '/' IntExpr
+
+    $default  reduce using rule 35 (DblExpr)
+
+
+State 85
+
+   20 IntExpr: IntExpr . '+' IntExpr
+   20        | IntExpr '+' IntExpr .
+   21        | IntExpr . '-' IntExpr
+   22        | IntExpr . '*' IntExpr
+   23        | IntExpr . '/' IntExpr
+
+    '*'  shift, and go to state 55
+    '/'  shift, and go to state 56
+
+    $default  reduce using rule 20 (IntExpr)
+
+
+State 86
+
+   20 IntExpr: IntExpr . '+' IntExpr
+   21        | IntExpr . '-' IntExpr
+   21        | IntExpr '-' IntExpr .
+   22        | IntExpr . '*' IntExpr
+   23        | IntExpr . '/' IntExpr
+
+    '*'  shift, and go to state 55
+    '/'  shift, and go to state 56
+
+    $default  reduce using rule 21 (IntExpr)
+
+
+State 87
+
+   20 IntExpr: IntExpr . '+' IntExpr
+   21        | IntExpr . '-' IntExpr
+   22        | IntExpr . '*' IntExpr
+   22        | IntExpr '*' IntExpr .
+   23        | IntExpr . '/' IntExpr
+
+    $default  reduce using rule 22 (IntExpr)
+
+
+State 88
+
+   20 IntExpr: IntExpr . '+' IntExpr
+   21        | IntExpr . '-' IntExpr
+   22        | IntExpr . '*' IntExpr
+   23        | IntExpr . '/' IntExpr
+   23        | IntExpr '/' IntExpr .
+
+    $default  reduce using rule 23 (IntExpr)
+
+
+State 89
+
+   14 GroupInput: UNDER Assignable '{' $@1 ValidInput '}' .
+
+    $default  reduce using rule 14 (GroupInput)
+
+
+State 90
+
+   20 IntExpr: IntExpr . '+' IntExpr
+   21        | IntExpr . '-' IntExpr
+   22        | IntExpr . '*' IntExpr
+   23        | IntExpr . '/' IntExpr
+   40 IntSetLoop: IntSetLoop ',' IntExpr .
+
+    '+'  shift, and go to state 53
+    '-'  shift, and go to state 54
+    '*'  shift, and go to state 55
+    '/'  shift, and go to state 56
+
+    $default  reduce using rule 40 (IntSetLoop)
+
+
+State 91
+
+   20 IntExpr: IntExpr . '+' IntExpr
+   21        | IntExpr . '-' IntExpr
+   22        | IntExpr . '*' IntExpr
+   23        | IntExpr . '/' IntExpr
+   28 DblExpr: IntExpr . '+' DblExpr
+   31        | IntExpr . '-' DblExpr
+   33        | IntExpr . '*' DblExpr
+   36        | IntExpr . '/' DblExpr
+
+    '+'  shift, and go to state 39
+    '-'  shift, and go to state 40
+    '*'  shift, and go to state 41
+    '/'  shift, and go to state 42
+
+
+State 92
+
+   26 DblExpr: DblExpr . '+' DblExpr
+   27        | DblExpr . '+' IntExpr
+   29        | DblExpr . '-' DblExpr
+   30        | DblExpr . '-' IntExpr
+   32        | DblExpr . '*' DblExpr
+   34        | DblExpr . '*' IntExpr
+   35        | DblExpr . '/' DblExpr
+   37        | DblExpr . '/' IntExpr
+   43 DblSetLoop: DblSetLoop ',' DblExpr .
+
+    '+'  shift, and go to state 44
+    '-'  shift, and go to state 45
+    '*'  shift, and go to state 46
+    '/'  shift, and go to state 47
+
+    $default  reduce using rule 43 (DblSetLoop)
+
+
+State 93
+
+   46 StrSetLoop: StrSetLoop ',' String .
+
+    $default  reduce using rule 46 (StrSetLoop)

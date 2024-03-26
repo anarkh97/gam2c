@@ -18,10 +18,32 @@ Assigner::assignDouble(double)
   exit(-1);
 }
 
+template<typename T>
 void
-Assigner::assignDoubleList(vector<double> *)
+Assigner::assignSet(set<T> *)
 {
-  fprintf(stderr, " *** ERROR: %s cannot be assigned a list\n", name.c_str());
+  fprintf(stderr, " *** ERROR: %s cannot be assigned a set\n", name.c_str());
+  exit(-1);
+}
+
+template <>
+void Assigner::assignSet<int>(set<int> *)
+{
+  fprintf(stderr, " *** ERROR: %s cannot be assigned a integer set\n", name.c_str());
+  exit(-1);
+}
+
+template <>
+void Assigner::assignSet<double>(set<double> *)
+{
+  fprintf(stderr, " *** ERROR: %s cannot be assigned a double set\n", name.c_str());
+  exit(-1);
+}
+
+template <>
+void Assigner::assignSet<std::string>(set<std::string> *)
+{
+  fprintf(stderr, " *** ERROR: %s cannot be assigned a string set\n", name.c_str());
   exit(-1);
 }
 
@@ -76,13 +98,17 @@ SysStrObj::SysStrObj(const char *n, const char **p)
  addSysSymbol(n, this);
 }
 
-SysLstObj::SysLstObj(const char *n, vector<double> *p)
+template<typename T>
+SysSetObj<T>::SysSetObj(const char *n, set<T> *p)
 : Assigner(n)
 {
   val = p;
   addSysSymbol(n, this);
 }
 
+template class SysSetObj<int>;
+template class SysSetObj<double>;
+template class SysSetObj<std::string>;
 
 SysTokenObj::SysTokenObj(const char *n, int *p, int nt, ...) : tk(nt), val(nt),
  Assigner(n)

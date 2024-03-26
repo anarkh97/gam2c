@@ -41,10 +41,10 @@ int main(int argc, char* argv[])
 	IoData iod(argc, argv);
 
 	// builds default methods and set values from our inputs.
-	DkLibraryEnvironment env(MPI_COMM_WORLD, opts, 
-		check_bcast_construct, setup_data_containers, &iod);
+	DkLibraryEnvironment env(MPI_COMM_WORLD, opts, check_bcast_construct);
 
-	// check if we need to reset the top iterator
+	// setup dakota with our inputs
+	env.update_db(iod);
 
 	// dakota exit mode
 	env.exit_mode("throw");

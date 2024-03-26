@@ -15,17 +15,19 @@ int underLevel = 0;
 %}
 
 %code requires {
-#include <vector>
+#include <set>
 }
 
 %union
 {
- int               ival;
- double            dval;
- std::vector<double>   *list;
- int	          token;
- char             *sval;
- Assigner         *asgn;
+ int                       ival;
+ double                    dval;
+ int	                  token;
+ char                     *sval;
+ Assigner                 *asgn;
+ std::set<int>           *ilist;
+ std::set<double>        *dlist;
+ std::set<std::string>   *slist;
 }
 
 %token UNDER EoF IntConstant DblConstant Symbol String END BOGUS
@@ -36,7 +38,9 @@ int underLevel = 0;
 
 %type <ival> IntConstant IntExpr
 %type <dval> DblConstant DblExpr
-%type <list> ListExpr ListLoop
+%type <ilist> IntSetExpr IntSetLoop
+%type <dlist> DblSetExpr DblSetLoop
+%type <slist> StrSetExpr StrSetLoop
 %type <token> Symbol
 %type <asgn>	Assignable
 %type <sval>	String
@@ -58,8 +62,12 @@ Assignment: Assignable '=' Symbol ';'
 	{ $1->assignInt($3); }
 	| Assignable '=' DblExpr ';'
 	{ $1->assignDouble($3); }
-  	| Assignable '=' ListExpr ';'
-  	{ $1->assignDoubleList($3); }
+  	| Assignable '=' IntSetExpr ';'
+  	{ $1->assignSet<int>($3); }
+  	| Assignable '=' DblSetExpr ';'
+  	{ $1->assignSet<double>($3); }
+  	| Assignable '=' StrSetExpr ';'
+  	{ $1->assignSet<std::string>($3); }
 	| Assignable '=' String ';'
 	{ $1->assignString(strdup($3)); }
 
@@ -144,21 +152,57 @@ DblExpr:
   | DblExpr '/' IntExpr
   { $$ = $1 / $3; }
 
-ListExpr: 
-  '[' ListLoop ']'
+IntSetExpr: 
+  '(' IntSetLoop ')'
   {
     $$ = $2;
   }
 
-ListLoop: 
+IntSetLoop: 
+  IntExpr
+  { 
+    $$ = new std::set<int>();
+    $$->insert($1);
+  }
+  | IntSetLoop ',' IntExpr
+  {
+    $1->insert($3);
+    $$ = $1;
+  }
+
+DblSetExpr: 
+  '(' DblSetLoop ')'
+  {
+    $$ = $2;
+  }
+
+DblSetLoop: 
   DblExpr
   { 
-    $$ = new std::vector<double>();
-    $$->push_back($1);
+    $$ = new std::set<double>();
+    $$->insert($1);
   }
-  | ListLoop ',' DblExpr
+  | DblSetLoop ',' DblExpr
   {
-    $1->push_back($3);
+    $1->insert($3);
+    $$ = $1;
+  }
+
+StrSetExpr: 
+  '(' StrSetLoop ')'
+  {
+    $$ = $2;
+  }
+
+StrSetLoop: 
+  String
+  { 
+    $$ = new std::set<std::string>();
+    $$->insert($1);
+  }
+  | StrSetLoop ',' String
+  {
+    $1->insert($3);
     $$ = $1;
   }
 

@@ -20,8 +20,9 @@ ClassDouble<T>::ClassDouble(ClassAssigner *ca, const char *n, T *_ptr, double T:
   ca->addSmb(n, this);
 }
 
-template <class T>
-ClassList<T>::ClassList(ClassAssigner *ca, const char *n, T *_ptr, vector<double> *T::*_sp)
+template <class T, class Type>
+ClassSet<T, Type>::
+ClassSet(ClassAssigner *ca, const char *n, T *_ptr, set<Type> *T::*_sp)
 : Assigner(n)
 {
   ptr = _ptr;

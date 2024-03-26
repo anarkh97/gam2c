@@ -7,12 +7,14 @@
 
 #include <cstdio>
 #include <map>
+#include <set>
 #include <vector>
 #include "parser/Assigner.h"
 #include "parser/Dictionary.h"
 
 /* not a good practice to specify namespaces in headers. */
 using std::map;
+using std::set;
 using std::vector;
 
 /*********************************************************************
@@ -45,13 +47,21 @@ struct DesignVariableData {
 
   //AN: TODO implement REAL_DISCRETE_SET and INTEGER_DISCRETE_SET
   enum Type {REAL_CONTINUOUS=0, REAL_DISCRETE, INTEGER_CONTINUOUS, 
-             INTEGER_DISCRETE, NONE} type;
+             INTEGER_DISCRETE, STRING_DISCRETE, NONE} type;
   const char *var_name; //!< design variable name required by JEGA.
   double upper_limit; //!< continuous variable upper limit; if any.
   double lower_limit; //!< continuous variable lower limit; if any.
 
+  set<double> *real_discrete; //set of real values taken by this variable
+  set<int> *int_discrete; //set of int values taken by this variable
+  set<std::string> *string_discrete; //set of string values taken by this variable
+
   DesignVariableData();
-  ~DesignVariableData() {};
+  ~DesignVariableData() {
+    if(real_discrete) delete real_discrete;
+    if(int_discrete) delete int_discrete;
+    if(string_discrete) delete string_discrete; 
+  }
 
   Assigner *getAssigner();
 
@@ -76,7 +86,7 @@ struct ParameterData {
 
 struct ConstraintData {
 
-  enum Nature {LINEAR = 0, NON_LINEAR} nature;
+  //enum Nature {LINEAR = 0, NON_LINEAR} nature;
   enum Type {INEQUALITY = 0, EQUALITY, NONE} type;
 
   double upper_limit; //!< upper limit for one and two sided inequality constraint.
@@ -172,13 +182,13 @@ struct AlgorithmData {
 
   enum Verbose {SILENT=0, NORMAL, DEBUG, QUIET, VERBOSE} verbose;
   enum Type {BASIC=0, SMART} type;
-  enum Selector {DEFAULT_SELECTOR=0, ROULETTE, UNIQUE_ROULETTE, ELITIST} selector;
+  enum Selector {DEFAULT_SELECTOR=0, ROULETTE, UNIQUE_ROULETTE, ELITIST, FAVOR_FEASIBLE} selector;
   enum Tracker {DEFAULT_TRACKER=0, AVG_FITNESS, BEST_FITNESS, NONE} tracker;
   enum Initializer {DEFAULT_INITIALIZER=0, SIMPLE_RANDOM, UNIQUE_RANDOM} initializer;  
   enum Crosser {DEFAULT_CROSSER=0, MULTI_POINT_BINARY, MULTI_POINT_PARAM_BINARY, 
                 MULTI_POINT_REAL, SHUFFLE_RANDOM} crosser;
-  enum Mutator {DEFAULT_MUTATOR=0, RANDOM_BIT=0, CAUCHY_OFFSET, NORMAL_OFFSET, UNIFORM_OFFSET,
-                UNIFROM_REPLACE} mutator;
+  enum Mutator {DEFAULT_MUTATOR=0, RANDOM_BIT, CAUCHY_OFFSET, NORMAL_OFFSET, UNIFORM_OFFSET,
+                UNIFORM_REPLACE} mutator;
   
   enum YesNo {NO=0, YES} print_each_pop;
 
@@ -195,6 +205,7 @@ struct AlgorithmData {
   double crossover_rate;
   int shuffle_parents; //only required by shuffle random
   int shuffle_offspring; //only required by shuffle random
+  int num_cross_points; //required by binary crossers
 
   //intializer data
   int population_size; //!< Initial population size
@@ -203,7 +214,8 @@ struct AlgorithmData {
   //convergence data
   int max_iterations;
   int max_func_evals;
-  double convergence_tol; //required for dakota's percent_change
+  double convergence_tol; //relative to previous best
+  double percent_change; //required for dakota's percent_change
   int tracked_generations; //number of generation check for percent change
 
   //output data

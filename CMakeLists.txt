@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.24)
 
 # use gcc and g++ to compile
 SET(CMAKE_C_COMPILER gcc)
@@ -45,6 +45,10 @@ add_custom_target(VersionHeader
 set(ExportTarget MyLibraryTargets CACHE STRING 
   "Export set name for ${CMAKE_PROJECT_NAME}")
 
+#---------------------------------------------------------------------------------------------------------
+# External packages required.
+find_package(Boost 1.71 COMPONENTS filesystem REQUIRED)
+
 # find mlpack package config
 find_package(PkgConfig REQUIRED)
 set(ENV{PKG_CONFIG_PATH} 
@@ -62,6 +66,7 @@ pkg_search_module(PKG_MLPACK REQUIRED IMPORTED_TARGET mlpack)
 #file(GLOB DAK_LIBS "$ENV{DAK_BUILD}/install/lib/lib*.so")
 file(GLOB DAK_TPL_LIBS "$ENV{DAK_BUILD}/install/bin/lib*.so")
 include(${CMAKE_SOURCE_DIR}/MyLibraryTargets.cmake)
+#---------------------------------------------------------------------------------------------------------
 
 ADD_CUSTOM_COMMAND(
     OUTPUT ${CMAKE_SOURCE_DIR}/version.h
@@ -101,6 +106,7 @@ MyJEGAOptimizer.cpp
 # link to libraries
 target_link_libraries(gam2c parser)
 target_link_libraries(gam2c PkgConfig::PKG_MLPACK)
+target_link_libraries(gam2c ${Boost_FILESYSTEM_LIBRARY})# ${Boost_SYSTEM_LIBRARY})
 #target_link_libraries(gam2c ${DAK_LIBS} ${DAK_TPL_LIBS})
 target_link_libraries(gam2c jega utilities jega_fe moga soga eutils)
 target_link_libraries(gam2c dakota_src)

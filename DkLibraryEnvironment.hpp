@@ -1,20 +1,13 @@
-#include "ParallelLibrary.hpp"
-#include "ProblemDescDB.hpp"
-#include "LibraryEnvironment.hpp"
-#include "DataMethod.hpp"
-#include "DataModel.hpp"
-#include "DataInterface.hpp"
-#include "DataVariables.hpp"
-#include "DakotaModel.hpp"
-#include "DakotaInterface.hpp"
-#include "PluginSerialDirectApplicInterface.hpp"
-#include "PluginParallelDirectApplicInterface.hpp"
+#include <ParallelLibrary.hpp>
+#include <ProblemDescDB.hpp>
+#include <LibraryEnvironment.hpp>
+#include <PluginParallelDirectApplicInterface.hpp> 
 
 #ifndef DAKOTA_HAVE_MPI
 #define MPI_COMM_WORLD 0
 #endif // not DAKOTA_HAVE_MPI
 
-static void setup_data_containers(Dakota::ProblemDescDB* pdb, void* iod_ptr);
+#include <IoData.hpp>
 
 class DkLibraryEnvironment : public Dakota::LibraryEnvironment
 {
@@ -27,7 +20,8 @@ public:
 											: LibraryEnvironment(dakota_mpi_comm, 
 																					 prog_opts, check_bcast_construct, NULL, NULL)
 											{ };
+  //LibraryEnvironment destructor handles deleting pointers
 	~DkLibraryEnvironment() { };
 
-	void reset_top_iterator();
+	void update_db(const IoData &iod);
 };

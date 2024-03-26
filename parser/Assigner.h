@@ -4,16 +4,19 @@
 #include <stdio.h>
 
 #ifdef OLD_STL
+#include <set.h>
 #include <vector.h>
 #include <string.h>
 #include <map.h>
 #else
+#include <set>
 #include <vector>
 #include <string>
 #include <map>
 using std::string;
 using std::vector;
 using std::map;
+using std::set;
 #endif
 
 class Assigner {
@@ -24,8 +27,10 @@ class Assigner {
    virtual void assignDouble(double);
    virtual void assignToken(int);
    virtual void assignString(const char *);
-   virtual void assignDoubleList(vector<double> *);
    virtual Assigner *findSubToken(int);
+
+   template<typename T>
+   void assignSet(set<T> *);
 
    virtual Assigner *findIndexObject(int);
 };
@@ -46,11 +51,12 @@ class SysDoubleObj : public Assigner {
    void assignDouble(double v) { *val = v; }
 };
 
-class SysLstObj : public Assigner {
-   vector<double> *val;
+template<class T>
+class SysSetObj : public Assigner {
+   set<T> *val;
   public:
-    SysLstObj(const char *n, vector<double> *p);
-    void assignDoubleList(vector<double> *v) { val = v; }
+    SysSetObj(const char *n, set<T> *p);
+    void assignSet(set<T> *v) { val = v; }
 };
 
 class SysTokenObj : public Assigner {
@@ -123,13 +129,13 @@ class ClassDouble : public Assigner {
     void assignDouble(double v) { ptr->*sp = v; }
 };
 
-template <class T>
-class ClassList : public Assigner {
+template <class T, class Type>
+class ClassSet : public Assigner {
     T *ptr;
-    vector<double> *T::*sp;
+    set<Type> *T::*sp;
   public:
-    ClassList(ClassAssigner *, const char *n, T *ptr, vector<double> *T::*sp);
-    void assignDoubleList(vector<double> *v) { ptr->*sp = v; }; 
+    ClassSet(ClassAssigner *, const char *n, T *ptr, set<Type> *T::*sp);
+    void assignSet(set<Type> *v) { *(ptr->*sp) = v; }; 
 };
 
 template <class T>

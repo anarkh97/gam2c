@@ -42,7 +42,7 @@ extern int yyCmdfdebug;
 /* "%code requires" blocks.  */
 #line 17 "Parser.y" /* yacc.c:1909  */
 
-#include <vector>
+#include <set>
 
 #line 48 "Parser.tab.h" /* yacc.c:1909  */
 
@@ -69,14 +69,16 @@ union YYSTYPE
 {
 #line 22 "Parser.y" /* yacc.c:1909  */
 
- int               ival;
- double            dval;
- std::vector<double>   *list;
- int	          token;
- char             *sval;
- Assigner         *asgn;
+ int                       ival;
+ double                    dval;
+ int	                  token;
+ char                     *sval;
+ Assigner                 *asgn;
+ std::set<int>           *ilist;
+ std::set<double>        *dlist;
+ std::set<std::string>   *slist;
 
-#line 80 "Parser.tab.h" /* yacc.c:1909  */
+#line 82 "Parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

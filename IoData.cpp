@@ -37,12 +37,12 @@ Assigner*
 DesignVariableData::getAssigner()
 {
 
-  ClassAssigner *ca = new ClassAssigner("normal", 4, nullAssigner);
+  ClassAssigner *ca = new ClassAssigner("normal", 7, nullAssigner);
   //Parse tokens
   new ClassToken<DesignVariableData>(ca, "Type", this,
                                    reinterpret_cast<int DesignVariableData::*>(&DesignVariableData::type), 
-                                   5, "RealContinuous", 0, "RealDiscrete", 1, "IntegerContinuous", 2, 
-                                   "IntegerDiscrete", 3, "None", 4);
+                                   6, "RealContinuous", 0, "RealDiscrete", 1, "IntegerContinuous", 2, 
+                                   "IntegerDiscrete", 3, "StringDiscrete", 4, "None", 5);
   //Parse integrals
   //Parse doubles
   new ClassDouble<DesignVariableData>(ca, "LowerBound", this, &DesignVariableData::lower_limit); 
@@ -50,6 +50,9 @@ DesignVariableData::getAssigner()
   //Parse strings
   new ClassStr<DesignVariableData>(ca, "Name", this, &DesignVariableData::var_name);
   //Parse objects
+  new ClassSet<DesignVariableData, int> (ca, "IntDiscrete", this, &DesignVariableData::int_discrete);
+  new ClassSet<DesignVariableData, double> (ca, "RealDiscrete", this, &DesignVariableData::real_discrete);
+  new ClassSet<DesignVariableData, string> (ca, "StringDiscrete", this, &DesignVariableData::string_discrete);
 
   return ca;
 
@@ -59,7 +62,7 @@ DesignVariableData::getAssigner()
 
 ConstraintData::ConstraintData()
 {
-  nature = NON_LINEAR;
+  //nature = NON_LINEAR;
   type = NONE;
   con_name = "c";
   lower_limit = -DBL_MAX;
@@ -74,11 +77,11 @@ Assigner*
 ConstraintData::getAssigner()
 {
 
-  ClassAssigner *ca = new ClassAssigner("normal", 7, nullAssigner);
+  ClassAssigner *ca = new ClassAssigner("normal", 6, nullAssigner);
   //Parse tokens
-  new ClassToken<ConstraintData>(ca, "Nature", this,
-                                 reinterpret_cast<int ConstraintData::*>(&ConstraintData::nature), 
-                                 2, "Linear", 0, "NonLinear", 1);
+  //new ClassToken<ConstraintData>(ca, "Nature", this,
+  //                               reinterpret_cast<int ConstraintData::*>(&ConstraintData::nature), 
+  //                               2, "Linear", 0, "NonLinear", 1);
   new ClassToken<ConstraintData>(ca, "Type", this,
                                  reinterpret_cast<int ConstraintData::*>(&ConstraintData::type), 
                                  4, "Inequality", 0, "Equality", 1, "None", 2);
@@ -135,16 +138,18 @@ AlgorithmData::AlgorithmData()
   mutation_scale = 1; //dakota default
 
   crossover_rate = 0.75; //dakota default
+  num_cross_points = 4; //dakota default
   shuffle_parents = 2; //dakota default
   shuffle_offspring = 2; //dakota default
 
   population_size = 50; //dakota default
-  seed = -1; //dakota randomizes if -1
+  seed = 0; //dakota randomizes if 0
 
   max_func_evals = 1000;
   max_iterations = 100;
   tracked_generations = 10;
-  convergence_tol = 0; //checks if exact
+  percent_change = 0; //checks if exact
+  convergence_tol = 1e-3;
 
   constraint_penalty = 1.0;
   final_solutions = 1;
@@ -155,7 +160,7 @@ AlgorithmData::AlgorithmData()
 void
 AlgorithmData::setup(const char *name, ClassAssigner *father)
 {
-  ClassAssigner *ca = new ClassAssigner(name, 21, father);
+  ClassAssigner *ca = new ClassAssigner(name, 23, father);
   //Parse tokens
   new ClassToken<AlgorithmData>(ca, "Verbose", this,
                                    reinterpret_cast<int AlgorithmData::*>(&AlgorithmData::verbose), 
@@ -165,7 +170,8 @@ AlgorithmData::setup(const char *name, ClassAssigner *father)
                                    2, "Basic", 0, "WithAI", 1);
   new ClassToken<AlgorithmData>(ca, "SelectionType", this,
                                    reinterpret_cast<int AlgorithmData::*>(&AlgorithmData::selector), 
-                                   4, "Default", 0, "Roulette", 1, "UniqueRoulette", 2, "Elitist", 3);
+                                   5, "Default", 0, "Roulette", 1, "UniqueRoulette", 2, "Elitist", 3,
+                                   "FavorFeasible", 4);
   new ClassToken<AlgorithmData>(ca, "ConvergenceType", this,
                                    reinterpret_cast<int AlgorithmData::*>(&AlgorithmData::tracker), 
                                    3, "Default", 0, "Average", 1, "Best", 2);
@@ -186,6 +192,7 @@ AlgorithmData::setup(const char *name, ClassAssigner *father)
   new ClassInt<AlgorithmData>(ca, "NumberOfParents", this, &AlgorithmData::shuffle_parents);
   new ClassInt<AlgorithmData>(ca, "NumberOfOffspring", this, &AlgorithmData::shuffle_offspring);
   new ClassInt<AlgorithmData>(ca, "PopulationSize", this, &AlgorithmData::population_size);
+  new ClassInt<AlgorithmData>(ca, "NumberOfCrossPoints", this, &AlgorithmData::num_cross_points);
   new ClassInt<AlgorithmData>(ca, "Seed", this, &AlgorithmData::seed);
   new ClassInt<AlgorithmData>(ca, "MaxIterations", this, &AlgorithmData::max_iterations);
   new ClassInt<AlgorithmData>(ca, "MaxObjectiveEvals", this, &AlgorithmData::max_func_evals);
@@ -196,7 +203,8 @@ AlgorithmData::setup(const char *name, ClassAssigner *father)
   new ClassDouble<AlgorithmData>(ca, "MutationRate", this, &AlgorithmData::mutation_rate);
   //AN: right now not allowing mutation scale updates.
   new ClassDouble<AlgorithmData>(ca, "CrossoverRate", this, &AlgorithmData::crossover_rate);
-  new ClassDouble<AlgorithmData>(ca, "PercentageChange", this, &AlgorithmData::convergence_tol);
+  new ClassDouble<AlgorithmData>(ca, "PercentageChange", this, &AlgorithmData::percent_change);
+  new ClassDouble<AlgorithmData>(ca, "ConvergenceTol", this, &AlgorithmData::convergence_tol);
   //Parse strings
 
   //Parse objects
@@ -210,7 +218,7 @@ InterfaceData::InterfaceData()
   mode = SYNCHRONOUS;
   local_scheduling = STATIC;
   evaluation_concurrency = 1;
-  directory_tag = "";
+  directory_tag = "eval";
   //patterns handled by dakota; we just provide names right now
   params_file_pattern = "params.in";
   result_file_pattern = "results.out";
