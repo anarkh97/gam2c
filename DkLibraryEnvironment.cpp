@@ -30,6 +30,9 @@ DkLibraryEnvironment::update_db(const IoData &iod)
   const ParameterData &param = iod.param;
   const ResponseData &resp = iod.resp;
 
+  // Unlock database
+  probDescDB.resolve_top_method();
+
   //AN: for our use world rank should always be 0
   //However, following dakota's library_mode.cpp just in case.
   Dakota::ParallelLibrary &parallel_lib = this->parallel_library();
